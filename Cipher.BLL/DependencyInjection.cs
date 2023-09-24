@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Cipher.BLL.Utilities.AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cipher.BLL
@@ -7,7 +8,7 @@ namespace Cipher.BLL
     {
         public static void RegisterBLLDependencies(this IServiceCollection services, IConfiguration Configuration)
         {
-
+            services.AddAutoMapper(typeof(AutoMapperProfiles));
         }
     }
 }
