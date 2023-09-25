@@ -1,9 +1,9 @@
-﻿using Cipher.DAL.Data;
+﻿using CipherApp.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cipher.DAL
+namespace CipherApp.DAL
 {
     public static class DependencyInjection
     {
