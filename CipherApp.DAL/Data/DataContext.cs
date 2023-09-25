@@ -1,7 +1,7 @@
-﻿using Cipher.DAL.Entities;
+﻿using CipherApp.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cipher.DAL.Data
+namespace CipherApp.DAL.Data
 {
     public class DataContext : DbContext
     {

@@ -1,5 +1,4 @@
-﻿
-namespace Cipher.DAL.Entities
+﻿namespace CipherApp.DAL.Entities
 {
     public class Message
     {

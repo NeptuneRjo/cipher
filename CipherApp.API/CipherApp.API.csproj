@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+	<ProjectReference Include=".\Cipher.DAL\Cipher.DAL.csproj"/>
   </ItemGroup>
 
 </Project>

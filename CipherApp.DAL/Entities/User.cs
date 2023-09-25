@@ -1,4 +1,4 @@
-﻿namespace Cipher.DAL.Entities
+﻿namespace CipherApp.DAL.Entities
 {
     public class User
     {
