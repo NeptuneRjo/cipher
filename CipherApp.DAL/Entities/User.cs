@@ -9,5 +9,9 @@
         public string UID { get; set; }
         public bool OAuth { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        public ICollection<ChatUser> ChatUsers { get; set; }
+
+        public ICollection<Message> Messages { get; set; }
     }
 }
