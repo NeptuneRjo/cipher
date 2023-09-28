@@ -15,6 +15,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\CipherApp.DAL\CipherApp.DAL.csproj" />
+		<ProjectReference Include="..\CipherApp.DTO\CipherApp.DTO.csproj" />
 	</ItemGroup>
 
 </Project>
