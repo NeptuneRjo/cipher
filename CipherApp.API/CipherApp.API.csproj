@@ -14,12 +14,9 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
 	
   <ItemGroup>
+	  <ProjectReference Include="..\CipherApp.BLL\CipherApp.BLL.csproj" />
 	  <ProjectReference Include="..\CipherApp.DAL\CipherApp.DAL.csproj" />
   </ItemGroup>
 
