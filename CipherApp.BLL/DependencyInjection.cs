@@ -1,4 +1,6 @@
 ﻿using Cipher.BLL.Utilities.AutoMapper;
+using CipherApp.BLL.Services;
+using CipherApp.BLL.Services.IServices;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +15,10 @@ namespace Cipher.BLL
     {
         public static void RegisterBLLDependencies(this IServiceCollection services, IConfiguration Configuration)
         {
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMessageService,  MessageService>();
+
             services.AddAutoMapper(typeof(AutoMapperProfiles));
 
             services.AddAuthentication(options =>
