@@ -51,10 +51,10 @@ namespace CipherApp.DAL.Repositories
         public async Task<ICollection<TEntity>> GetAllAsync() =>
             await _context.Set<TEntity>().ToListAsync();
 
-        public async Task<ICollection<TEntity>> GetAllByQueryAsync(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, object>>[]? includes = null) =>
+        public async Task<ICollection<TEntity>> GetAllByQueryAsync(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[]? includes) =>
             await Queryable(includes).Where(filter).ToListAsync();
 
-        public async Task<TEntity> GetByQueryAsync(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, object>>[]? includes = null) =>
+        public async Task<TEntity> GetByQueryAsync(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[]? includes) =>
             await Queryable(includes).FirstOrDefaultAsync(filter);
 
         private IQueryable<TEntity> Queryable(Expression<Func<TEntity, object>>[]? includes)

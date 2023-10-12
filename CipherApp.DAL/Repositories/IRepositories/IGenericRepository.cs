@@ -30,7 +30,7 @@ namespace CipherApp.DAL.Repositories.IRepositories
         /// <param name="filter"></param>
         /// <param name="includes"></param>
         /// <returns>The found <see cref="TEntity"/></returns>
-        Task<TEntity> GetByQueryAsync(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, object>>[]? includes);
+        Task<TEntity> GetByQueryAsync(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[]? includes);
 
         /// <summary>
         /// Filter the database for a collection of entities asynchronously. Add expression for child elements
@@ -38,7 +38,7 @@ namespace CipherApp.DAL.Repositories.IRepositories
         /// <param name="filter"></param>
         /// <param name="includes"></param>
         /// <returns>The found <see cref="ICollection{TEntity}"/></returns>
-        Task<ICollection<TEntity>> GetAllByQueryAsync(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, object>>[]? includes);
+        Task<ICollection<TEntity>> GetAllByQueryAsync(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, object>>[]? includes);
 
         /// <summary>
         /// Update an entity asynchronously
