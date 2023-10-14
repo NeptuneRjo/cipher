@@ -19,8 +19,8 @@
         /// <summary>
         /// Encrypt the password of the user instance
         /// </summary>
-        public void EncryptPassword() =>
-            this.Password = BCrypt.HashPassword(this.Password, BCrypt.GenerateSalt());
+        public string EncryptPassword(string password) =>
+            BCrypt.HashPassword(password, BCrypt.GenerateSalt());
 
         /// <summary>
         /// Check if the provided password matches the stored hashed password
