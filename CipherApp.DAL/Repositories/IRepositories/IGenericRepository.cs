@@ -9,7 +9,7 @@ namespace CipherApp.DAL.Repositories.IRepositories
         /// </summary>
         /// <param name="entity"></param>
         /// <returns>The added <see cref="TEntity"/></returns>
-        Task<TEntity> AddAsync(TEntity entity);
+        Task<TEntity> AddEntityAsync(TEntity entity);
 
         /// <summary>
         /// Add a range of entities asynchronously
