@@ -8,6 +8,6 @@ namespace CipherApp.BLL.Services.IServices
     {
         Task<UserDto> LoginAsync(UserToLoginDto userToLoginDto);
 
-        Task<User> RegisterAsync(NewUserDto userToRegisterDto);
+        Task<User> RegisterAsync(UserToRegisterDto userToRegisterDto);
     }
 }
