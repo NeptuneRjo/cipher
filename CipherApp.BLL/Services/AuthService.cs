@@ -53,7 +53,7 @@ namespace CipherApp.BLL.Services
             bool validated = user.ValidatePassword(userToLoginDto.password);
 
             if (!validated)
-                throw new BcryptAuthenticationException(); // implement custom exception?
+                throw new LoginFailedException();
 
             var userToReturn = _mapper.Map<UserDto>(user);
             userToReturn.Token = GenerateJWT(user.Id, user.Username);
@@ -61,7 +61,7 @@ namespace CipherApp.BLL.Services
             return userToReturn;
         }
 
-        public async Task<User> RegisterAsync(NewUserDto userToRegisterDto)
+        public async Task<User> RegisterAsync(UserToRegisterDto userToRegisterDto)
         {
             User user = _mapper.Map<User>(userToRegisterDto);
 
