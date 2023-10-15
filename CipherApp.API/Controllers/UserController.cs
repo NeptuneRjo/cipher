@@ -23,7 +23,7 @@ namespace CipherApp.API.Controllers
         private IActionResult NotFoundResponse(int id) =>
             NotFound($"Unable to find a user with the id = {id}");
 
-
+        [HttpGet("all")]
         public async Task<IActionResult> GetUsers()
         {
             try
