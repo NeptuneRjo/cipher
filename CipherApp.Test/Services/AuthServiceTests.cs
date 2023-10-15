@@ -53,7 +53,7 @@ namespace CipherApp.Test.Services
             password = "password"
         };
 
-        private readonly NewUserDto _mockUserToRegister = new NewUserDto()
+        private readonly UserToRegisterDto _mockUserToRegister = new UserToRegisterDto()
         {
             Username = "username",
             Password = "password"
