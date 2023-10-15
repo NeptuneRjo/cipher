@@ -97,7 +97,7 @@ namespace CipherApp.BLL.Services
             return tokenString;
         }
 
-        public string EncryptPassword(string password) =>
+        private string EncryptPassword(string password) =>
             BCrypt.HashPassword(password, BCrypt.GenerateSalt());
     }
 }
