@@ -18,6 +18,7 @@ namespace Cipher.BLL
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageService,  MessageService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddAutoMapper(typeof(AutoMapperProfiles));
 
