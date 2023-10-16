@@ -42,7 +42,7 @@ namespace CipherApp.API.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Something went wrong");
+                return StatusCode(500, "Something went wrong");
             }
         }
 
@@ -69,9 +69,13 @@ namespace CipherApp.API.Controllers
 
                 return Ok(loggedInUser);
             }
+            catch (UserExistsException)
+            {
+                return BadRequest("Username already in user");
+            }
             catch (Exception)
             {
-                return BadRequest("Something went wrong");
+                return StatusCode(500, "Something went wrong");
             }
         }
     }
