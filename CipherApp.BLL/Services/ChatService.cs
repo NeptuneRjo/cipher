@@ -1,7 +1,12 @@
 ﻿using AutoMapper;
 using CipherApp.BLL.Services.IServices;
+using CipherApp.BLL.Utilities.CustomExceptions;
+using CipherApp.DAL.Entities;
 using CipherApp.DAL.Repositories.IRepositories;
+using CipherApp.DTO.Request;
+using CipherApp.DTO.Response;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 
 namespace CipherApp.BLL.Services
 {
@@ -20,6 +25,48 @@ namespace CipherApp.BLL.Services
             _mapper = mapper;
             _logger = logger;
             _repository = repository;
+        }
+
+        private readonly Expression<Func<Chat, object>>[] includes =
+        {
+            e => e.Messages, e => e.ChatUsers
+        };
+
+        public async Task<ChatDto> GetChatAsync(int id, string username)
+        {
+            var chat = await _repository.GetByQueryAsync(e => e.Id == id, includes);
+
+            if (chat == null)
+            {
+                _logger.LogError($"Chat with the id = {id} was not found");
+                throw new NotFoundException();
+            }
+        
+            bool userIsInChat = chat.ChatUsers
+                .Any(e => e.User.Username.ToLower() == username.ToLower());
+
+            if (!userIsInChat)
+                throw new UnauthorizedAccessException();
+
+            var chatDto = _mapper.Map<ChatDto>(chat);
+
+            return chatDto;
+        }
+
+        public async Task<ChatDto> CreateChatAsync
+            (ChatToCreateDto chatToCreate, int userId)
+        {
+            Chat chat = new()
+            {
+                OwnerId = userId,
+                Name = chatToCreate?.Name,
+            };
+
+            Chat addedChat = await _repository.AddEntityAsync(chat);
+
+            ChatDto chatDto = _mapper.Map<ChatDto>(addedChat);
+
+            return chatDto;
         }
     }
 }
