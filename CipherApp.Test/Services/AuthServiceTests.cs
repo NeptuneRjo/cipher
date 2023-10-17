@@ -43,7 +43,7 @@ namespace CipherApp.Test.Services
             Id = 1,
             Username = "username",
             CreatedAt = new DateTime(),
-            Chats = new List<ChatDto>(),
+            Chats = new List<ChatListDto>(),
             Messages = new List<MessageDto>(),
         };
 
@@ -101,7 +101,7 @@ namespace CipherApp.Test.Services
                 .Returns(Task.FromResult(_mockUser));
             _mapper.Map<UserDto>(_mockUser).Returns(_mockUserDto);
 
-            await Assert.ThrowsAsync<BcryptAuthenticationException>(
+            await Assert.ThrowsAsync<LoginFailedException>(
                 () => _service.LoginAsync(new UserToLoginDto()
                 {
                     username = "username",
