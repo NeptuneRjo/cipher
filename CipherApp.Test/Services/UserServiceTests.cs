@@ -36,7 +36,7 @@ namespace CipherApp.Test.Services
             Id = 1,
             Username = "username",
             CreatedAt = new DateTime(),
-            Chats = new List<ChatDto>(),
+            Chats = new List<ChatListDto>(),
             Messages = new List<MessageDto>(),
         };
 
