@@ -65,6 +65,11 @@ namespace CipherApp.BLL.Services
         {
             User user = _mapper.Map<User>(userToRegisterDto);
 
+            bool alreadyInUse = await _repository.ExistsAsync(e => e.Username.ToLower() == userToRegisterDto.Username.ToLower());
+
+            if (alreadyInUse)
+                throw new UserExistsException();
+
             user.Password = EncryptPassword(user.Password);
 
             await _repository.AddEntityAsync(user);
