@@ -10,7 +10,7 @@ namespace CipherApp.DTO.Response
 
         public string? Token { get; set; }
 
-        public ICollection<ChatDto> Chats { get; set; }
+        public ICollection<ChatListDto> Chats { get; set; }
 
         public ICollection<MessageDto> Messages { get; set; }
     }
