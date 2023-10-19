@@ -2,21 +2,31 @@ using Cipher.BLL;
 using CipherApp.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
-var services = builder.Services;
 
 // Add services to the container.
+builder.Services.AddRazorPages();
+var services = builder.Services;
 
-services.AddControllers();
-
-services.RegisterDALDependencies(builder.Configuration);
 services.RegisterBLLDependencies(builder.Configuration);
+services.RegisterDALDependencies(builder.Configuration);
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapRazorPages();
 
 app.Run();
