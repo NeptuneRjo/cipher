@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CipherApp.BLL", "CipherApp.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CipherApp.Test", "CipherApp.Test\CipherApp.Test.csproj", "{03DD9A89-837C-4C4F-AE3D-3399CB64DD36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CipherApp.API", "CipherApp.API\CipherApp.API.csproj", "{6AC2D593-15D4-49B6-9BF8-E80408F09473}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CipherApp.API", "CipherApp.API\CipherApp.API.csproj", "{6AC2D593-15D4-49B6-9BF8-E80408F09473}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
