@@ -24,30 +24,8 @@ namespace Cipher.BLL
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddCookie()
-                .AddJwtBearer(options =>
-                {
-                    SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]));
-
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = key,
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
-                })
-                .AddGitHub(options =>
-                {
-                    options.ClientId = Configuration["GitHub:ClientId"];
-                    options.ClientSecret = Configuration["GitHub:ClientSecret"];
-                });
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie("CookieAuthentication");
 
             services.AddLogging(builder =>
             {
