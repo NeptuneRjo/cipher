@@ -16,6 +16,7 @@ namespace CipherApp.Test.Services
 {
     using BCrypt.Net;
     using CipherApp.BLL.Utilities.CustomExceptions;
+    using CipherApp.DAL.Models;
 
     public class AuthServiceTests
     {
@@ -59,6 +60,20 @@ namespace CipherApp.Test.Services
             Password = "password"
         };
 
+        private readonly LoginInputModel _mockLoginInputModel = new LoginInputModel()
+        {
+            Username = "username",
+            Password = "password"
+        };
+
+        private readonly RegisterInputModel _mockRegisterInputModel = 
+            new RegisterInputModel()
+        {
+                Username = "username",
+                Password = "password",
+                Password2 = "password"
+        };
+
         public AuthServiceTests(ITestOutputHelper output)
         {
             _output = output;
@@ -74,7 +89,7 @@ namespace CipherApp.Test.Services
         }
 
         [Fact]
-        public async Task LoginAsync_WhenSuccess_ReturnsDto_WithToken()
+        public async Task LoginAsync_WhenSuccess_ReturnsDto()
         {
             _repository
                 .GetByQueryAsync(
@@ -84,14 +99,13 @@ namespace CipherApp.Test.Services
                 .Returns(Task.FromResult(_mockUser));
             _mapper.Map<UserDto>(_mockUser).Returns(_mockUserDto);
 
-            var result = await _service.LoginAsync(_mockUserToLogin);
+            var result = await _service.LoginAsync(_mockLoginInputModel);
 
             Assert.NotNull(result);
-            Assert.NotNull(result.Token);
         }
 
         [Fact]
-        public async Task LoginAsync_WhenInvalidPassword_ThrowsBcryptAuthenticationException()
+        public async Task LoginAsync_WhenInvalidPassword_ThrowsLoginFailedException()
         {
             _repository
                 .GetByQueryAsync(
@@ -102,10 +116,10 @@ namespace CipherApp.Test.Services
             _mapper.Map<UserDto>(_mockUser).Returns(_mockUserDto);
 
             await Assert.ThrowsAsync<LoginFailedException>(
-                () => _service.LoginAsync(new UserToLoginDto()
+                () => _service.LoginAsync(new LoginInputModel()
                 {
-                    username = "username",
-                    password = "test"
+                    Username = "username",
+                    Password = "test"
                 }));
         }
 
@@ -113,31 +127,35 @@ namespace CipherApp.Test.Services
         public async Task LoginAsync_WhenUserNotFound_ThrowsNotFoundException()
         {
             await Assert.ThrowsAsync<NotFoundException>(
-                () => _service.LoginAsync(_mockUserToLogin));
+                () => _service.LoginAsync(_mockLoginInputModel));
         }
 
         [Fact]
         public async Task RegisterAsync_WhenSuccessful_ReturnsUser()
         {
-            var userToAdd = new User()
-            {
-                Id = 1,
-                Password = "password",
-                Username = "username",
-                CreatedAt = new DateTime(),
-                ChatUsers = new List<ChatUser>(),
-                Messages = new List<Message>(),
-            };
+            _mapper.Map<User>(_mockRegisterInputModel).Returns(_mockUser);
+            _mapper.Map<UserDto>(_mockUser).Returns(_mockUserDto);
 
-            _mapper.Map<User>(_mockUserToRegister).Returns(_mockUser);
             _repository
                 .AddEntityAsync(Arg.Any<User>())
-                .Returns(userToAdd);
+                .Returns(_mockUser);
 
-            var result = await _service.RegisterAsync(_mockUserToRegister);
+            var result = await _service.RegisterAsync(_mockRegisterInputModel);
 
             Assert.NotNull(result);
-            Assert.Equivalent(result, _mockUser, strict: true);
+            Assert.Equivalent(result, _mockUserDto, strict: true);
+        }
+
+        [Fact]
+        public async Task RegisterAsync_WhenUsernameInUser_ThrowsUserExistsException()
+        {
+            _repository
+                .ExistsAsync(Arg.Any<Expression<Func<User, bool>>>())
+                .Returns(true);
+
+            await Assert
+                .ThrowsAsync<UserExistsException>(() => 
+                    _service.RegisterAsync(_mockRegisterInputModel));
         }
     }
 }
