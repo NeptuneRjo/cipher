@@ -16,6 +16,7 @@ namespace CipherApp.BLL.Services
 {
 
     using BCrypt.Net;
+    using CipherApp.DAL.Models;
 
     public class AuthService : IAuthService
     {
@@ -39,67 +40,44 @@ namespace CipherApp.BLL.Services
             _config = config;
         }
 
-        public async Task<UserDto> LoginAsync(UserToLoginDto userToLoginDto)
+        public async Task<UserDto> LoginAsync(LoginInputModel input)
         {
             var user = await _repository
-                .GetByQueryAsync(e => e.Username == userToLoginDto.username);
+                .GetByQueryAsync(e => e.Username == input.Username);
 
             if (user == null)
             {
-                _logger.LogError($"User with the username = {userToLoginDto.username} was not found");
+                _logger.LogError($"User with the username = {input.Username} was not found");
                 throw new NotFoundException();
             }
 
-            bool validated = user.ValidatePassword(userToLoginDto.password);
+            bool validated = user.ValidatePassword(input.Password);
 
             if (!validated)
                 throw new LoginFailedException();
 
-            var userToReturn = _mapper.Map<UserDto>(user);
-            userToReturn.Token = GenerateJWT(user.Id, user.Username);
+            UserDto userToReturn = _mapper.Map<UserDto>(user);
 
             return userToReturn;
         }
 
-        public async Task<User> RegisterAsync(UserToRegisterDto userToRegisterDto)
+        public async Task<UserDto> RegisterAsync(RegisterInputModel input)
         {
-            User user = _mapper.Map<User>(userToRegisterDto);
 
-            bool alreadyInUse = await _repository.ExistsAsync(e => e.Username.ToLower() == userToRegisterDto.Username.ToLower());
+            bool alreadyInUse = await _repository
+                .ExistsAsync(e => e.Username.ToLower() == input.Username.ToLower());
 
             if (alreadyInUse)
                 throw new UserExistsException();
 
+            User user = _mapper.Map<User>(input);
             user.Password = EncryptPassword(user.Password);
 
             await _repository.AddEntityAsync(user);
 
-            return user;
-        }
+            UserDto userDto = _mapper.Map<UserDto>(user);
 
-        private string GenerateJWT(int userId, string username)
-        {
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                new Claim(ClaimTypes.Name, username)
-            };
-            var creds = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(1),
-                SigningCredentials = creds
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-            return tokenString;
+            return userDto;
         }
 
         private string EncryptPassword(string password) =>
