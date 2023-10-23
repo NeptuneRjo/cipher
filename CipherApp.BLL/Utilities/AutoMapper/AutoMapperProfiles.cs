@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CipherApp.DAL.Entities;
+using CipherApp.DAL.Models;
 using CipherApp.DTO.Request;
 using CipherApp.DTO.Response;
 
@@ -20,6 +21,9 @@ namespace Cipher.BLL.Utilities.AutoMapper
                 .ForMember(dest => dest.Chats, opt => opt.MapFrom(src => src.ChatUsers.Select(cu => cu.Chat)));
 
             CreateMap<UserToRegisterDto, User>();
+
+            CreateMap<LoginInputModel, User>();
+            CreateMap<RegisterInputModel, User>();
 
             CreateMap<Message, MessageDto>();
         }
