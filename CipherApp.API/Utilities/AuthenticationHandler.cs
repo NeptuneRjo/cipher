@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
 namespace CipherApp.API.Utilities
@@ -21,8 +22,8 @@ namespace CipherApp.API.Utilities
             };
 
             await context.SignInAsync(
-                "CookieAuthentication",
-                new ClaimsPrincipal(claimsIdentity),
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity), 
                 authProperties);
         }
     }
