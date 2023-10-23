@@ -25,7 +25,12 @@ namespace Cipher.BLL
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie("CookieAuthentication");
+            }).AddCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                options.SlidingExpiration = true;
+                options.LoginPath = "/Login";
+            });
 
             services.AddLogging(builder =>
             {
