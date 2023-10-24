@@ -12,9 +12,14 @@ namespace CipherApp.API.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/Login");
+            }
 
+            return Page();
         }
     }
 }
