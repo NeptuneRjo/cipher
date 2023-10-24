@@ -44,8 +44,10 @@ namespace CipherApp.API.Pages
                 {
                     ModelState.AddModelError("Username", "Username already in use");
                 }
+            } else
+            {
+                ModelState.AddModelError("Password", "Passwords do not match");
             }
-            ModelState.AddModelError("Password", "Passwords do not match");
 
             return Page();
         }
