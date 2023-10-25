@@ -29,7 +29,7 @@ namespace CipherApp.BLL.Services
 
         private readonly Expression<Func<Chat, object>>[] includes =
         {
-            e => e.Messages, e => e.ChatUsers
+            e => e.Messages
         };
 
         public async Task<ChatDto> GetChatAsync(int id, string username)
@@ -41,12 +41,6 @@ namespace CipherApp.BLL.Services
                 _logger.LogError($"Chat with the id = {id} was not found");
                 throw new NotFoundException();
             }
-        
-            bool userIsInChat = chat.ChatUsers
-                .Any(e => e.User.Username.ToLower() == username.ToLower());
-
-            if (!userIsInChat)
-                throw new UnauthorizedAccessException();
 
             var chatDto = _mapper.Map<ChatDto>(chat);
 
@@ -58,8 +52,8 @@ namespace CipherApp.BLL.Services
         {
             Chat chat = new()
             {
-                OwnerId = userId,
-                Name = chatToCreate?.Name,
+                //OwnerId = userId,
+                //Name = chatToCreate?.Name,
             };
 
             Chat addedChat = await _repository.AddEntityAsync(chat);
