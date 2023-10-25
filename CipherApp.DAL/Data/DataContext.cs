@@ -15,33 +15,20 @@ namespace CipherApp.DAL.Data
 
         public DbSet<User> Users { get; set; }
 
-        public DbSet<ChatUser> ChatUsers { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.Entity<ChatUser>()
-                .HasKey(cu => new { cu.ChatId, cu.UserId });
-
-            modelBuilder.Entity<ChatUser>()
-                .HasOne(cu => cu.User)
-                .WithMany(cu => cu.ChatUsers)
-                .HasForeignKey(cu => cu.UserId);
-
-            modelBuilder.Entity<ChatUser>()
-                .HasOne(cu => cu.Chat)
-                .WithMany(cu => cu.ChatUsers)
-                .HasForeignKey(cu => cu.ChatId);
-
-            modelBuilder.Entity<Chat>()
+            builder.Entity<Chat>()
                 .HasMany(c => c.Messages)
-                .WithOne(c => c.Chat)
-                .HasForeignKey(c => c.ChatId);
+                .WithOne(m => m.Chat)
+                .HasForeignKey(m => m.ChatId);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Messages)
-                .WithOne(u => u.User)
-                .HasForeignKey(u => u.UserId);
+            builder.Entity<ChatMessage>()
+                .HasOne(m => m.Sender)
+                .WithMany()
+                .HasForeignKey(m => m.SenderId);
         }
     }
 }
