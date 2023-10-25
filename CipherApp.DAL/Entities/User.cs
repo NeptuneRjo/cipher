@@ -8,10 +8,14 @@
         public string Password { get; set; }
         public string Username { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string Email { get; set; }
+        public string UID { get; set; }
 
-        public ICollection<ChatUser> ChatUsers { get; set; }
-
-        public ICollection<Message> Messages { get; set; }
+        public User()
+        {
+            CreatedAt = DateTime.Now;
+            Password = EncryptPassword(Password);
+        }
     }
 
     public partial class User
