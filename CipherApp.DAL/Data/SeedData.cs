@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CipherApp.DAL.Data
 {
+    using BCrypt.Net;
+
     public static class SeedData
     {
         public static void Initialize(IServiceProvider serviceProvider)
@@ -30,14 +32,14 @@ namespace CipherApp.DAL.Data
             context.Users.AddRange(
                 new User
                 {
-                    Password = "password",
+                    Password = BCrypt.HashPassword("password", BCrypt.GenerateSalt()),
                     Username = "username",
                     Email = "email@email.com",
                     UID = "username:123"
                 },
                 new User
                 {
-                    Password = "password",
+                    Password = BCrypt.HashPassword("password", BCrypt.GenerateSalt()),
                     Username = "username",
                     Email = "test@email.com",
                     UID = "username:321"
