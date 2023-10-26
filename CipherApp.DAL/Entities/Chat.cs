@@ -9,6 +9,6 @@
         public DateTime CreatedAt { get; set; }
         public DateTime LastMessage { get; set; }
 
-        public ICollection<Message> Messages { get; set; }
+        public ICollection<ChatMessage> Messages { get; set; }
     }
 }
