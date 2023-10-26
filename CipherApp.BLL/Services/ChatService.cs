@@ -62,5 +62,18 @@ namespace CipherApp.BLL.Services
 
             return chatDto;
         }
+
+        public async Task<ICollection<ChatDto>> GetChatsAsync(int userUID)
+        {
+            var chats = await _repository.GetAllByQueryAsync(
+                e => e.ParticipantOneId == userUID || 
+                e.ParticipantTwoId == userUID,
+                includes);
+
+            ICollection<ChatDto> chatDtoList = _mapper.Map<ICollection<ChatDto>>(chats);
+
+            return chatDtoList;
+        }
+
     }
 }
