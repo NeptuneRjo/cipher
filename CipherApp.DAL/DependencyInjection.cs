@@ -17,9 +17,17 @@ namespace CipherApp.DAL
 
             services.AddDbContext<DataContext>(options =>
             {
+                bool isDevelopment = Configuration["Development"] == "true";
                 var defaultConnectionString = Configuration.GetConnectionString("DefaultConnection");
 
-                options.UseSqlServer(defaultConnectionString);
+                if (isDevelopment)
+                {
+                    options.UseInMemoryDatabase("CipherApp");
+                } else
+                {
+                    options.UseSqlServer(defaultConnectionString);
+                }
+
             });
         }
     }
