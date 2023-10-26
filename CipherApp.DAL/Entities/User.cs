@@ -14,7 +14,6 @@
         public User()
         {
             CreatedAt = DateTime.Now;
-            Password = EncryptPassword(Password);
         }
     }
 
