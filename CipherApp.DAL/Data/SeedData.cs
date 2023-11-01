@@ -17,12 +17,48 @@ namespace CipherApp.DAL.Data
                     throw new ArgumentNullException(nameof(context));
                 }
 
-                if (!context.Users.Any())
-                    SeedUsers(context);
-                
-                if (!context.Chats.Any()) 
-                    SeedChats(context);
+                if (!context.Chats.Any())
+                {
+                    context.Chats.AddRange(
+                        new Chat
+                        {
+                            UID = "1234ABC",
+                            CreatedAt = DateTime.Now,
+                            LastMessage = DateTime.Now,
+                            Messages = new List<Message>()
+                            {
+                                new Message()
+                                {
+                                    Content = "test",
+                                    Username = "user1",
+                                    ChatId = 1,
+                                },
+                                new Message()
+                                {
+                                    Content = "Hello world",
+                                    Username = "user2",
+                                    ChatId = 1
+                                }
+                            },
+                            Users = new List<User>()
+                            {
+                                new User()
+                                {
+                                    Username = "test",
+                                    ChatId = 1,
+                                },
+                                new User()
+                                {
+                                    Username = "username",
+                                    ChatId = 1,
+                                }
+                            }
+                        }
+                    );
 
+                    context.SaveChanges();
+                }
+                    
                 return;
             }
         }
@@ -32,17 +68,17 @@ namespace CipherApp.DAL.Data
             context.Users.AddRange(
                 new User
                 {
-                    Password = BCrypt.HashPassword("password", BCrypt.GenerateSalt()),
+                    Id = 1,
                     Username = "username",
-                    Email = "email@email.com",
-                    UID = "username:123"
+                    Messages = new List<Message>(),
+                    ChatId = 1,
                 },
                 new User
                 {
-                    Password = BCrypt.HashPassword("password", BCrypt.GenerateSalt()),
-                    Username = "username",
-                    Email = "test@email.com",
-                    UID = "username:321"
+                    Id = 2,
+                    Username = "test",
+                    Messages = new List<Message>(),
+                    ChatId = 2,
                 }
             );
 
@@ -51,32 +87,7 @@ namespace CipherApp.DAL.Data
 
         private static void SeedChats(DataContext context) 
         {
-            context.Chats.AddRange(
-                new Chat
-                {
-                    ParticipantOneId = 1,
-                    ParticipantTwoId = 2,
-                    CreatedAt = DateTime.Now,
-                    LastMessage = DateTime.Now,
-                    Messages = new List<ChatMessage>()
-                    {
-                        new ChatMessage
-                        {
-                            ChatId = 1,
-                            SenderId = 1,
-                            Content = "Hello world!",
-                            SentAt = DateTime.Now,
-                        },
-                        new ChatMessage
-                        {
-                            ChatId = 1,
-                            SenderId = 2,
-                            Content = "test message",
-                            SentAt = DateTime.Now,
-                        }
-                    }
-                }
-            );
+            
         }
 
     }
