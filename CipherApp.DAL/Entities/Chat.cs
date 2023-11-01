@@ -3,12 +3,16 @@
     public class Chat
     {
         public int Id { get; set; }
-        public int ParticipantOneId { get; set; }
-        public int ParticipantTwoId { get; set; }
+        public string UID { get; set; }
+        public ICollection<User> Users { get; set; }
+        public ICollection<Message> Messages { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime LastMessage { get; set; }
 
-        public ICollection<ChatMessage> Messages { get; set; }
+        public Chat()
+        {
+            CreatedAt = DateTime.Now;
+        }
     }
 }
