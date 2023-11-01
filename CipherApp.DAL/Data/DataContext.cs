@@ -15,9 +15,6 @@ namespace CipherApp.DAL.Data
 
         public DbSet<User> Users { get; set; }
 
-        public DbSet<ChatMessage> ChatMessages { get; set; }
-
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Chat>()
@@ -25,10 +22,10 @@ namespace CipherApp.DAL.Data
                 .WithOne(m => m.Chat)
                 .HasForeignKey(m => m.ChatId);
 
-            builder.Entity<ChatMessage>()
-                .HasOne(m => m.Sender)
-                .WithMany()
-                .HasForeignKey(m => m.SenderId);
+            builder.Entity<Chat>()
+                .HasMany(c => c.Users)
+                .WithOne(u => u.Chat)
+                .HasForeignKey(u => u.ChatId);
         }
     }
 }
