@@ -1,0 +1,25 @@
+﻿@page
+@model CipherApp.API.Pages.LoginModel
+@{
+}
+
+
+<div>
+    <form method="post" asp-page-handler="Email">
+        <div class="form-group">
+            <label asp-for="LoginInput.Email">Email:</label>
+            <input asp-for="LoginInput.Email" />
+        </div>
+        <div class="form-group">
+            <label asp-for="LoginInput.Password">Password:</label>
+            <input asp-for="LoginInput.Password" />
+        </div>
+        <button type="submit">Login</button>
+    </form>
+    <div>
+        <ul class="list-unstyled">
+            <li class="text-danger">@Html.ValidationMessage("LoginError")</li>
+            <li class="text-danger">@Html.ValidationMessage("ApplicationError")</li>
+        </ul>
+    </div>
+</div>
