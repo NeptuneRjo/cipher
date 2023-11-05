@@ -1,5 +1,4 @@
-﻿using CipherApp.DTO.Request;
-using CipherApp.DTO.Response;
+﻿using CipherApp.DTO.Response;
 
 namespace CipherApp.BLL.Services.IServices
 {
@@ -10,7 +9,5 @@ namespace CipherApp.BLL.Services.IServices
 
         Task<UserDto> AuthUserAsync(string username, string password);
         Task<UserDto> AuthUserAsync(int id, string password);
-
-        Task<UserDto> CreateUserAsync(UserToRegisterDto newUser);
     }
 }

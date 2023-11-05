@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using CipherApp.BLL.Services.IServices;
 using CipherApp.BLL.Utilities.CustomExceptions;
+using CipherApp.BLL.Utilities.UsernameGen;
 using CipherApp.DAL.Entities;
 using CipherApp.DAL.Repositories.IRepositories;
-using CipherApp.DTO.Request;
 using CipherApp.DTO.Response;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
@@ -29,17 +29,6 @@ namespace CipherApp.BLL.Services
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
-        }
-
-        public async Task<UserDto> CreateUserAsync(UserToRegisterDto newUser)
-        {
-            var user = _mapper.Map<User>(newUser);
-
-            //user.EncryptPassword();
-
-            var added = await _repository.AddEntityAsync(user);
-
-            return _mapper.Map<UserDto>(added);
         }
 
         public async Task<UserDto> AuthUserAsync(string username, string password) =>
