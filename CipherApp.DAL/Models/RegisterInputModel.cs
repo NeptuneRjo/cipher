@@ -17,6 +17,7 @@ namespace CipherApp.DAL.Models
         public string Email { get; set; }
 
         [Required, DataType(DataType.Password), Display(Name = "Password")]
+        [MinLength(6, ErrorMessage = "Passwords should be at least 6 characters long")]
         public string Password { get; set; }
 
         [Required, DataType(DataType.Password), Display(Name = "Confirm Password")]
