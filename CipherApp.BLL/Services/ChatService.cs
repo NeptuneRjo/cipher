@@ -67,14 +67,13 @@ namespace CipherApp.BLL.Services
                 throw new NotFoundException();
             }
 
-            user.Chat = chat;
-            user.ChatId = chat.Id;
+            chat.Users.Add(user);
+
+            await _repository.SaveChangesAsync();
 
             Chat updatedChat = await _repository.GetByQueryAsync(e => e.UID == chatUID, includes);
 
-            ChatDto chatDto = _mapper.Map<ChatDto>(updatedChat);
-
-            return chatDto;
+            return _mapper.Map<ChatDto>(updatedChat);
         }
 
         public async Task<bool> ChatExistsAsync(string chatUID) =>
