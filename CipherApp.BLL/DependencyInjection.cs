@@ -27,8 +27,6 @@ namespace Cipher.BLL
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(options =>
             {
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-                options.SlidingExpiration = true;
                 options.LoginPath = "/Login";
             });
 
