@@ -24,8 +24,7 @@ namespace CipherApp.DAL.Data
 
             builder.Entity<Chat>()
                 .HasMany(c => c.Users)
-                .WithOne(u => u.Chat)
-                .HasForeignKey(u => u.ChatId);
+                .WithMany(u => u.Chats);
         }
     }
 }
