@@ -1,11 +1,12 @@
-﻿using CipherApp.DTO.Response;
+﻿using CipherApp.DAL.Entities;
+using CipherApp.DTO.Response;
 
 namespace CipherApp.BLL.Services.IServices
 {
     public interface IUserService
     {
-        Task<UserDto> GetUserAsync(string username);
-        Task<UserDto> GetUserAsync(int id);
+        Task<User> GetUserAsync(int id);
+        Task<User> GetUserAsync(string email);
 
         Task<UserDto> AuthUserAsync(string username, string password);
         Task<UserDto> AuthUserAsync(int id, string password);

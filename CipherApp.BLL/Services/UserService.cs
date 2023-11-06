@@ -37,11 +37,11 @@ namespace CipherApp.BLL.Services
         public async Task<UserDto> AuthUserAsync(int id, string password) =>
             AuthenticateAndMapUser(await GetUserById(id), password);
 
-        public async Task<UserDto> GetUserAsync(string username) =>
-            _mapper.Map<UserDto>(await GetUserByUsername(username));
+        public async Task<User> GetUserAsync(string email) =>
+            await GetUserByEmail(email);
 
-        public async Task<UserDto> GetUserAsync(int id) =>
-            _mapper.Map<UserDto>(await GetUserById(id));
+        public async Task<User> GetUserAsync(int id) =>
+            await GetUserById(id);
 
         private UserDto AuthenticateAndMapUser(User user, string password)
         {
@@ -59,6 +59,20 @@ namespace CipherApp.BLL.Services
             if (user == null)
             {
                 _logger.LogError($"User with the username = {username} was not found");
+                throw new NotFoundException();
+            }
+
+            return user;
+        }
+
+        private async Task<User> GetUserByEmail(string email)
+        {
+            _logger.LogInformation($"User requested with the email = {email}");
+            var user = await _repository.GetByQueryAsync(e => e.Email == email, includes);
+
+            if (user == null)
+            {
+                _logger.LogError($"User with the email = {email} was not found");
                 throw new NotFoundException();
             }
 
