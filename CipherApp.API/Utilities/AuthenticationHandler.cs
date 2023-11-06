@@ -6,12 +6,18 @@ namespace CipherApp.API.Utilities
 {
     public static class AuthenticationHandler
     {
-        public static async Task Authenticate(HttpContext context, int userId, string username)
+        public static async Task Authenticate(
+            HttpContext context, 
+            int userId, 
+            string username, 
+            string email
+        )
         {
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                new Claim(ClaimTypes.Name, username)
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Email, email)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, "CookieAuthentication");
