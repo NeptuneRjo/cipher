@@ -36,7 +36,8 @@ namespace CipherApp.API.Pages.Auth
                 await AuthenticationHandler.Authenticate(
                     HttpContext,
                     user.Id,
-                    user.Username
+                    user.Username,
+                    user.Email
                 );
 
                 return RedirectToPage("./Index");
