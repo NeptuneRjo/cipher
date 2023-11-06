@@ -6,23 +6,21 @@ using CipherApp.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CipherApp.API.Pages
+namespace CipherApp.API.Pages.Auth
 {
-    public class RegisterModel : PageModel
+    public class LoginModel : PageModel
     {
         private readonly IAuthService _service;
 
         [BindProperty]
-        public RegisterInputModel RegisterInput { get; set; }
+        public LoginInputModel LoginInput { get; set; }
 
-        public RegisterModel(IAuthService service)
+        public LoginModel(IAuthService service)
         {
             _service = service;
         }
 
-        public void OnGet()
-        {
-        }
+        public void OnGet() { }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -31,7 +29,7 @@ namespace CipherApp.API.Pages
 
             try
             {
-                UserDto user = await _service.RegisterAsync(RegisterInput);
+                UserDto user = await _service.LoginAsync(LoginInput);
 
                 await AuthenticationHandler.Authenticate(
                     HttpContext,
@@ -39,11 +37,15 @@ namespace CipherApp.API.Pages
                     user.Username
                 );
 
-                return RedirectToPage("./Index");
+                return RedirectToPage("../Index");
             }
-            catch (UserExistsException)
+            catch (NotFoundException)
             {
-                ModelState.AddModelError("RegisterError", "Email already in use");
+                ModelState.AddModelError("LoginError", "Account not found");
+            }
+            catch (LoginFailedException)
+            {
+                ModelState.AddModelError("LoginError", "Invalid credentials");
             }
             catch (Exception)
             {
@@ -52,8 +54,5 @@ namespace CipherApp.API.Pages
 
             return Page();
         }
-
-        private bool PasswordsValid() =>
-            RegisterInput.Password == RegisterInput.ConfirmPassword;
     }
 }

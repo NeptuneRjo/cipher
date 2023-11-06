@@ -1,29 +1,28 @@
 using CipherApp.API.Utilities;
 using CipherApp.BLL.Services.IServices;
 using CipherApp.BLL.Utilities.CustomExceptions;
-using CipherApp.BLL.Utilities.Extensions;
 using CipherApp.DAL.Models;
 using CipherApp.DTO.Response;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
 
-namespace CipherApp.API.Pages
+namespace CipherApp.API.Pages.Auth
 {
-    public class LoginModel : PageModel
+    public class RegisterModel : PageModel
     {
         private readonly IAuthService _service;
 
         [BindProperty]
-        public LoginInputModel LoginInput { get; set; }
+        public RegisterInputModel RegisterInput { get; set; }
 
-        public LoginModel(IAuthService service)
+        public RegisterModel(IAuthService service)
         {
             _service = service;
         }
 
-        public void OnGet() { }
+        public void OnGet()
+        {
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -32,7 +31,7 @@ namespace CipherApp.API.Pages
 
             try
             {
-                UserDto user = await _service.LoginAsync(LoginInput);
+                UserDto user = await _service.RegisterAsync(RegisterInput);
 
                 await AuthenticationHandler.Authenticate(
                     HttpContext,
@@ -42,13 +41,9 @@ namespace CipherApp.API.Pages
 
                 return RedirectToPage("./Index");
             }
-            catch (NotFoundException)
+            catch (UserExistsException)
             {
-                ModelState.AddModelError("LoginError", "Account not found");
-            }
-            catch (LoginFailedException)
-            {
-                ModelState.AddModelError("LoginError", "Invalid credentials");
+                ModelState.AddModelError("RegisterError", "Email already in use");
             }
             catch (Exception)
             {
@@ -57,5 +52,8 @@ namespace CipherApp.API.Pages
 
             return Page();
         }
+
+        private bool PasswordsValid() =>
+            RegisterInput.Password == RegisterInput.ConfirmPassword;
     }
 }
