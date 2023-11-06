@@ -6,12 +6,10 @@ namespace CipherApp.DTO.Response
     {
         public int Id { get; set; }
         public string Username { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public string Email { get; set; }
 
-        public string? Token { get; set; }
-
-        public ICollection<ChatListDto> Chats { get; set; }
-
+        public ICollection<ChatDto> Chats { get; set; }
+     
         public ICollection<MessageDto> Messages { get; set; }
     }
 }
