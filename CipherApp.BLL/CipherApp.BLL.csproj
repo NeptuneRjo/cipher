@@ -37,10 +37,4 @@
 	  </EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <None Update="Utilities\UsernameGen\Resources\Adjetives.txt">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
-
 </Project>
