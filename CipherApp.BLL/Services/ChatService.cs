@@ -2,8 +2,8 @@
 using CipherApp.BLL.Services.IServices;
 using CipherApp.BLL.Utilities.CustomExceptions;
 using CipherApp.DAL.Entities;
+using CipherApp.DAL.Models;
 using CipherApp.DAL.Repositories.IRepositories;
-using CipherApp.DTO.Request;
 using CipherApp.DTO.Response;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
@@ -29,33 +29,27 @@ namespace CipherApp.BLL.Services
 
         private readonly Expression<Func<Chat, object>>[] includes =
         {
-            e => e.Messages
+            e => e.Messages, e => e.Users
         };
 
-        public async Task<ChatDto> GetChatAsync(int id, string username)
+        public async Task<ChatDto> GetChatAsync(string UID)
         {
-            var chat = await _repository.GetByQueryAsync(e => e.Id == id, includes);
+            Chat chat = await _repository.GetByQueryAsync(e => e.UID == UID, includes);
 
             if (chat == null)
             {
-                _logger.LogError($"Chat with the id = {id} was not found");
+                _logger.LogError($"Chat with the UID = {UID} was not found");
                 throw new NotFoundException();
             }
 
-            var chatDto = _mapper.Map<ChatDto>(chat);
+            ChatDto chatDto = _mapper.Map<ChatDto>(chat);
 
             return chatDto;
         }
 
-        public async Task<ChatDto> CreateChatAsync
-            (ChatToCreateDto chatToCreate, int userId)
+        public async Task<ChatDto> CreateChatAsync(ChatInputModel chatInputModel)
         {
-            Chat chat = new()
-            {
-                //OwnerId = userId,
-                //Name = chatToCreate?.Name,
-            };
-
+            Chat chat = _mapper.Map<Chat>(chatInputModel);
             Chat addedChat = await _repository.AddEntityAsync(chat);
 
             ChatDto chatDto = _mapper.Map<ChatDto>(addedChat);
@@ -63,17 +57,27 @@ namespace CipherApp.BLL.Services
             return chatDto;
         }
 
-        public async Task<ICollection<ChatDto>> GetChatsAsync(int userUID)
+        public async Task<ChatDto> AddUserAsync(User user, string chatUID)
         {
-            var chats = await _repository.GetAllByQueryAsync(
-                e => e.ParticipantOneId == userUID || 
-                e.ParticipantTwoId == userUID,
-                includes);
+            Chat chat = await _repository.GetByQueryAsync(e => e.UID == chatUID, includes);
 
-            ICollection<ChatDto> chatDtoList = _mapper.Map<ICollection<ChatDto>>(chats);
+            if (chat == null)
+            {
+                _logger.LogError($"Chat with the UID = {chatUID} was not found");
+                throw new NotFoundException();
+            }
 
-            return chatDtoList;
+            user.Chat = chat;
+            user.ChatId = chat.Id;
+
+            Chat updatedChat = await _repository.GetByQueryAsync(e => e.UID == chatUID, includes);
+
+            ChatDto chatDto = _mapper.Map<ChatDto>(updatedChat);
+
+            return chatDto;
         }
 
+        public async Task<bool> ChatExistsAsync(string chatUID) =>
+            await _repository.ExistsAsync(chat => chat.UID == chatUID);
     }
 }
