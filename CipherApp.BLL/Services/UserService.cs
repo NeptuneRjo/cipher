@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CipherApp.BLL.Services.IServices;
 using CipherApp.BLL.Utilities.CustomExceptions;
-using CipherApp.BLL.Utilities.UsernameGen;
 using CipherApp.DAL.Entities;
 using CipherApp.DAL.Repositories.IRepositories;
 using CipherApp.DTO.Response;
