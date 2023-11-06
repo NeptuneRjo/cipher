@@ -45,12 +45,14 @@ namespace CipherApp.DAL.Data
                                     Email = "test@email.com",
                                     Username = "test",
                                     ChatId = 1,
-                                },
+                                    Password = BCrypt.HashPassword("password")
+                                    },
                                 new User()
                                 {
                                     Email = "email@email.com",
                                     Username = "username",
                                     ChatId = 1,
+                                    Password = BCrypt.HashPassword("password")
                                 }
                             }
                         }
