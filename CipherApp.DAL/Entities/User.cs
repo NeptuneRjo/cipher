@@ -12,8 +12,10 @@
 
         public ICollection<Message> Messages { get; set; }
 
-        public int ChatId { get; set; }
-        public Chat Chat { get; set; }
+        public ICollection<Chat> Chats { get; set; }
+        //public int ChatId { get; set; }
+        //public Chat Chat { get; set; }
+
     }
 
     public partial class User 
