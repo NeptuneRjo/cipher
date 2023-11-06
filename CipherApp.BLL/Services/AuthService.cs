@@ -1,22 +1,17 @@
 ﻿using AutoMapper;
 using CipherApp.BLL.Services.IServices;
 using CipherApp.DAL.Repositories.IRepositories;
-using CipherApp.DTO.Request;
 using Microsoft.Extensions.Logging;
 using CipherApp.BLL.Utilities.CustomExceptions;
 using CipherApp.DAL.Entities;
 using CipherApp.DTO.Response;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.Extensions.Configuration;
+using CipherApp.DAL.Models;
 
 namespace CipherApp.BLL.Services
 {
 
     using BCrypt.Net;
-    using CipherApp.DAL.Models;
 
     public class AuthService : IAuthService
     {
@@ -43,11 +38,11 @@ namespace CipherApp.BLL.Services
         public async Task<UserDto> LoginAsync(LoginInputModel input)
         {
             var user = await _repository
-                .GetByQueryAsync(e => e.Username == input.Username);
+                .GetByQueryAsync(e => e.Email == input.Email);
 
             if (user == null)
             {
-                _logger.LogError($"User with the username = {input.Username} was not found");
+                _logger.LogError($"User with the email = {input.Email} was not found");
                 throw new NotFoundException();
             }
 
@@ -65,7 +60,7 @@ namespace CipherApp.BLL.Services
         {
 
             bool alreadyInUse = await _repository
-                .ExistsAsync(e => e.Username.ToLower() == input.Username.ToLower());
+                .ExistsAsync(e => e.Email == input.Email);
 
             if (alreadyInUse)
                 throw new UserExistsException();
