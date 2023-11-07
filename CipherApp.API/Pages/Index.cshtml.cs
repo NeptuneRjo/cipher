@@ -1,22 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CipherApp.API.Pages
 {
+    [AllowAnonymous]
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-
-        public IndexModel(ILogger<IndexModel> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult OnGet()
         {
-            if (!User.Identity.IsAuthenticated)
+            bool isAuthenticated = User.Identity.IsAuthenticated;
+
+            if (isAuthenticated)
             {
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Chat/Index");
             }
 
             return Page();
