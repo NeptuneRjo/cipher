@@ -31,11 +31,15 @@ namespace CipherApp.DAL.Data
                                 {
                                     Content = "test",
                                     ChatId = 1,
+                                    CreatedAt = DateTime.Now,
+                                    UserId = 2
                                 },
                                 new Message()
                                 {
                                     Content = "Hello world",
-                                    ChatId = 1
+                                    ChatId = 1,
+                                    CreatedAt = DateTime.Now,
+                                    UserId = 1,
                                 }
                             },
                             Users = new List<User>()
@@ -45,7 +49,7 @@ namespace CipherApp.DAL.Data
                                     Email = "test@email.com",
                                     Username = "test",
                                     Password = BCrypt.HashPassword("password")
-                                    },
+                                },
                                 new User()
                                 {
                                     Email = "email@email.com",
@@ -60,7 +64,7 @@ namespace CipherApp.DAL.Data
                             CreatedAt = DateTime.Now,
                             LastMessage = DateTime.Now,
                         }
-                    );
+                    ); ;
 
                     context.SaveChanges();
                 }
