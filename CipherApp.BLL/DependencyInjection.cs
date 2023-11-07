@@ -27,7 +27,8 @@ namespace Cipher.BLL
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(options =>
             {
-                options.LoginPath = "/Login";
+                options.LoginPath = "/Auth/Login";
+                options.LogoutPath = "/Auth/Signout";
             });
 
             services.AddLogging(builder =>
