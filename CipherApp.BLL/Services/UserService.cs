@@ -16,7 +16,7 @@ namespace CipherApp.BLL.Services
         private readonly IUserRepository _repository;
 
         private readonly Expression<Func<User, object>>[] includes = { 
-
+            e => e.Chats, e => e.Messages
         };
 
         public UserService(
