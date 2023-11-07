@@ -47,6 +47,15 @@ namespace CipherApp.BLL.Services
             return chatDto;
         }
 
+        public async Task<ICollection<ChatDto>> GetChatsByUserAsync(string email)
+        {
+            ICollection<Chat> chats = await _repository.GetChatsByEmail(email);
+
+            ICollection<ChatDto> chatDtos = _mapper.Map<ICollection<ChatDto>>(chats);
+
+            return chatDtos;
+        }
+
         public async Task<ChatDto> CreateChatAsync(ChatInputModel chatInputModel)
         {
             Chat chat = _mapper.Map<Chat>(chatInputModel);
