@@ -11,6 +11,8 @@ namespace CipherApp.BLL.Services.IServices
         Task<ChatDto> CreateChatAsync(ChatInputModel chatInputModel);
         Task<ChatDto> AddUserAsync(User user, string chatUID);
 
+        Task<ICollection<ChatDto>> GetChatsByUserAsync(string email);
+
         Task<bool> ChatExistsAsync(string chatUID);
     }
 }
