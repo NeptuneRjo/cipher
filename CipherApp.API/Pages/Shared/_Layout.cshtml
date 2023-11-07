@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CipherApp.API</title>
+    <title>@ViewData["Title"] - Cipher</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CipherApp.API.styles.css" asp-append-version="true" />
@@ -21,7 +21,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Chat/Index">Home</a>
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -29,12 +29,15 @@
                                 <div class="nav-link text-dark">Welcome, @User.FindFirst(ClaimTypes.Name)?.Value</div>
                             </li>
                             <li>
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Signout">Signout</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Auth/Signout">Signout</a>
                             </li>
                         } else
                         {
                             <li>
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Login">Log in</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Auth/Login">Log in</a>
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Auth/Register">Register</a>
                             </li>
                         }
                     </ul>
