@@ -22,50 +22,61 @@ namespace CipherApp.DAL.Data
                     context.Chats.AddRange(
                         new Chat
                         {
+                            Id = 1,
                             UID = "1234ABC",
                             CreatedAt = DateTime.Now,
                             LastMessage = DateTime.Now,
-                            Messages = new List<Message>()
-                            {
-                                new Message()
-                                {
-                                    Content = "test",
-                                    ChatId = 1,
-                                    CreatedAt = DateTime.Now,
-                                    UserId = 2
-                                },
-                                new Message()
-                                {
-                                    Content = "Hello world",
-                                    ChatId = 1,
-                                    CreatedAt = DateTime.Now,
-                                    UserId = 1,
-                                }
-                            },
                             Users = new List<User>()
                             {
                                 new User()
                                 {
+                                    Id = 2,
                                     Email = "test@email.com",
                                     Username = "test",
-                                    Password = BCrypt.HashPassword("password")
+                                    Password = BCrypt.HashPassword("password"),
+                                    Messages = new List<Message>()
+                                    {
+                                        new Message()
+                                        {
+                                            ChatId = 1,
+                                            UserId = 2,
+                                            Content = "Hello World!",
+                                            CreatedAt = DateTime.Now,
+                                        }
+                                    }
                                 },
                                 new User()
                                 {
+                                    Id = 1,
                                     Email = "email@email.com",
                                     Username = "username",
-                                    Password = BCrypt.HashPassword("password")
+                                    Password = BCrypt.HashPassword("password"),
+                                    Messages= new List<Message>()
+                                    {
+                                        new Message()
+                                        {
+                                            ChatId = 1,
+                                            UserId = 1,
+                                            Content = "GoodBye!",
+                                            CreatedAt = DateTime.Now,
+                                        }
+                                    },
+                                    Chats = new List<Chat>()
+                                    {
+                                        new Chat()
+                                        {
+                                            Id = 2,
+                                            UID = "ABC1234",
+                                            CreatedAt = DateTime.Now,
+                                            LastMessage = DateTime.Now,
+                                        }
+
+                                    }
+
                                 }
                             }
-                        },
-                        new Chat
-                        {
-                            UID = "ABC1234",
-                            CreatedAt = DateTime.Now,
-                            LastMessage = DateTime.Now,
                         }
-                    ); ;
-
+                    );
                     context.SaveChanges();
                 }
                     
