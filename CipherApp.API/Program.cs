@@ -1,4 +1,5 @@
 using Cipher.BLL;
+using CipherApp.API;
 using CipherApp.DAL;
 using CipherApp.DAL.Data;
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 var services = builder.Services;
 
+services.RegisterAPIDependencies(builder.Configuration);
 services.RegisterBLLDependencies(builder.Configuration);
 services.RegisterDALDependencies(builder.Configuration);
 
