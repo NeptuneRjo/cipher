@@ -86,9 +86,9 @@
     <div id="msg-section" class="d-flex flex-column card py-3 w-100 justify-content-between" style="height: 90vh;">
         <div style="scrollbar-width: none; overflow-y: scroll;" id="messages" ></div>
         @Html.AntiForgeryToken()
-        <form id="form">
-            <input name="Content" />
-            <button disabled id="submit-form-btn">Send Message</button>
+        <form id="form" class="p-2 d-flex flex-column align-content-end d-none">
+            <input id="form-content" class="form-control" name="Content" disabled />
+            <button disabled id="submit-form-btn" class="btn btn-primary my-1">Send Message</button>
         </form>
     </div>
 </div>
@@ -111,6 +111,9 @@
                 $("#messages").html("");
                 $("#messages").load("/Chat/MessagesPartial/" + chatUID, function() {
                     $("#submit-form-btn").prop("disabled", false);
+                    $("#form-content").prop("disabled", false);
+
+                    $("#form").removeClass("d-none");
 
                     UID = "";
                     UID = chatUID;
