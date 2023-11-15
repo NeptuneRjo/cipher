@@ -1,13 +1,19 @@
 ﻿@using CipherApp.DTO.Response;
+@using System.Security.Claims;
 @model ICollection<MessageDto>
 
 @{
 }
 
+@functions{
+    public bool IsUser(string msgEmail) =>
+        msgEmail == User.FindFirst(ClaimTypes.Email)?.Value;
+}
+
 @foreach (var Message in Model) {
     <div class="container">
         <div class="row">
-            <div class="col-6 offset-6">
+            <div class="col-6 @(IsUser(Message.User.Email) ? "offset-6" : "")">
                 <div class="card mb-3">
                     <div class="card-body">
                         <p class="card-subtitle text-muted">@Message.CreatedAt</p>
