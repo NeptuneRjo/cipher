@@ -1,5 +1,6 @@
 using Cipher.BLL;
 using CipherApp.API;
+using CipherApp.API.Hubs;
 using CipherApp.DAL;
 using CipherApp.DAL.Data;
 
@@ -38,5 +39,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
