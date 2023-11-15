@@ -13,9 +13,5 @@
         public int ChatId { get; set; }
         public Chat Chat { get; set; }
 
-        public Message()
-        {
-            CreatedAt = DateTime.Now;
-        }
     }
 }
