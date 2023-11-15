@@ -73,7 +73,11 @@ namespace CipherApp.API.Pages.Chat
         {
             try
             {
-                Messages.Add(message);
+                // Prevents messages from duplicating due to multiple connections
+                if (!Messages.Any(e => e.Id == message.Id))
+                {
+                    Messages.Add(message);
+                }
 
                 return Partial("_MessagesPartial", Messages);
             }
