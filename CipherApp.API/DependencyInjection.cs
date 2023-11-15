@@ -7,6 +7,8 @@ namespace CipherApp.API
         public static void RegisterAPIDependencies(this IServiceCollection services, IConfiguration Configuration)
         {
             services.AddScoped<IChatHub,  ChatHub>();
+
+            services.AddSignalR();
         }
     }
 }
