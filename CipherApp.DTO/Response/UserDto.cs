@@ -8,8 +8,6 @@ namespace CipherApp.DTO.Response
         public string Username { get; set; }
         public string Email { get; set; }
 
-        public ICollection<ChatDto> Chats { get; set; }
      
-        public ICollection<MessageDto> Messages { get; set; }
     }
 }
