@@ -1,0 +1,158 @@
+﻿@page "{handler?}/{UID?}/{Content?}"
+@using CipherApp.DTO.Response;
+@using System.Security.Claims;
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
+@model Chat.IndexModel
+@{
+    var token = antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+}
+
+@functions {
+    public string ShortenContent(string content) =>
+        content.Length <= 12 ? content : content.Substring(0, 12) + "...";
+
+    public string ConcatUsers(ICollection<UserDto> users)
+    {
+        string concat = "";
+        int iterations = 0;
+
+        // Convert to List so Users can be indexed
+        List<UserDto> userList = users.ToList();
+        int usersCount = userList.Count();
+
+        switch (usersCount)
+        {
+            // Meaningless variable `_`
+            case var _ when usersCount > 4:
+                iterations = 4;
+                break;
+            case var _ when (usersCount is < 4 and > 0):
+                // Count will be 1 longer than the indexable range
+                iterations = usersCount - 1;
+                break;
+            case var _ when usersCount == 0:
+                break;
+            default:
+                iterations = 4;
+                break;
+        }
+
+        for (int iterator = 0; iterator <= iterations; iterator++)
+        {
+            string username = userList[iterator].Username;
+
+            concat += iterator == iterations 
+                ? $"{username}..." 
+                : $"{username}, ";
+        }
+
+        return concat;
+    }
+
+    public string ShortenTime(DateTime time) =>
+        time.ToString().Split(" ")[0];
+
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    @* Chats Section *@
+    <div class="container" style="height: 90vh; width: 30%;">
+        <div class="row">
+            <div class="col-4 w-100">
+                <div class="card" style="height: 90vh; scrollbar-width: none; overflow-y: scroll;">
+                    <div class="card-body">
+                        <ul class="list-group">
+                            @foreach (var Chat in IndexModel.Chats)
+                            {
+                                <li class="list-group-item" onclick="selectChat(`@Chat.UID`)" id="chat">
+                                    <h5 class="mb-1">@ConcatUsers(Chat.Users)</h5>
+                                    <p>
+                                        @if (Chat.Messages.Count > 0)
+                                        {
+                                            @ShortenContent(Chat.Messages.Last().Content)
+                                        }
+                                    </p>
+                                    <small class="text-muted">@ShortenTime(Chat.LastMessage)</small>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Messages Section *@
+    <div id="msg-section" class="d-flex flex-column card py-3 w-100 justify-content-between" style="height: 90vh;">
+        <div style="scrollbar-width: none; overflow-y: scroll;" id="messages" ></div>
+        @Html.AntiForgeryToken()
+        <form id="form">
+            <input name="Content" />
+            <button disabled id="submit-form-btn">Send Message</button>
+        </form>
+    </div>
+</div>
+
+
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script type="text/javascript">
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        connection.start();
+
+        let UID;
+
+        function selectChat(chatUID) {
+            connection.invoke("JoinGroup", chatUID).then(function() {
+                $("#messages").html("");
+                $("#messages").load("/Chat/MessagesPartial/" + chatUID, function() {
+                    $("#submit-form-btn").prop("disabled", false);
+
+                    UID = "";
+                    UID = chatUID;
+                });
+            });
+        }
+
+        function updateMessagesPartial(partial) {
+            $("#messages").html("");
+            $("#messages").html(partial);
+        }
+
+        connection.on("ReceiveMessage", function(message) {
+            $.ajax({
+                url: "/Chat/MessagesPartial/" + UID,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(message),
+                xhrFields: {
+                    withCredentials: true,
+                },
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                success: function(data) {
+                    updateMessagesPartial(data);
+                }
+            });
+        });
+
+        $(function() {
+            $("#form").submit(function(ev) {
+                ev.preventDefault();
+
+                const content = $("input[name='Content']").val();
+                const userId = @int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+                connection.invoke("SendMessage", UID, content, userId).then(function () {
+                    $("input[name='Content']").val("");
+                });
+            })
+        })
+
+
+
+    </script>
+}
