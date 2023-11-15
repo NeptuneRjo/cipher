@@ -65,6 +65,6 @@ namespace CipherApp.DAL.Repositories.IRepositories
         /// Save changes to the database asynchronously
         /// </summary>
         /// <returns></returns>
-        Task SaveChangesAsync();
+        Task<int> SaveChangesAsync();
     }
 }

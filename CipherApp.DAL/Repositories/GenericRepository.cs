@@ -45,7 +45,7 @@ namespace CipherApp.DAL.Repositories
         public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> filter) =>
             await _context.Set<TEntity>().AsNoTracking().AnyAsync(filter);
 
-        public async Task SaveChangesAsync() =>
+        public async Task<int> SaveChangesAsync() =>
             await _context.SaveChangesAsync();
 
         public async Task<ICollection<TEntity>> GetAllAsync() =>
