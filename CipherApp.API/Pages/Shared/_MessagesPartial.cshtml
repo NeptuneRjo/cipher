@@ -1,0 +1,21 @@
+﻿@using CipherApp.DTO.Response;
+@model ICollection<MessageDto>
+
+@{
+}
+
+@foreach (var Message in Model) {
+    <div class="container">
+        <div class="row">
+            <div class="col-6 offset-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-subtitle text-muted">@Message.CreatedAt</p>
+                        <p class="card-text">@Message.Content</p>
+                        <p class="card-subtitle text-muted">@Message.User.Username</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
