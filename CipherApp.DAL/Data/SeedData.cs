@@ -42,8 +42,36 @@ namespace CipherApp.DAL.Data
                                             UserId = 2,
                                             Content = "Hello World!",
                                             CreatedAt = DateTime.Now,
+                                        },
+                                        new Message()
+                                        {
+                                            ChatId = 1,
+                                            UserId = 2,
+                                            Content = "Msg two",
+                                            CreatedAt = DateTime.Now,
+                                        },
+                                        new Message()
+                                        {
+                                            ChatId = 1,
+                                            UserId = 2,
+                                            Content = "Msg three",
+                                            CreatedAt = DateTime.Now,
+                                        },
+                                        new Message()
+                                        {
+                                            ChatId = 1,
+                                            UserId = 2,
+                                            Content = "Msg four",
+                                            CreatedAt = DateTime.Now,
+                                        },
+                                        new Message()
+                                        {
+                                            ChatId = 1,
+                                            UserId = 2,
+                                            Content = "Msg five",
+                                            CreatedAt = DateTime.Now,
                                         }
-                                    }
+                                        }
                                 },
                                 new User()
                                 {
@@ -58,6 +86,13 @@ namespace CipherApp.DAL.Data
                                             ChatId = 1,
                                             UserId = 1,
                                             Content = "GoodBye!",
+                                            CreatedAt = DateTime.Now,
+                                        },
+                                        new Message()
+                                        {
+                                            ChatId = 1,
+                                            UserId = 1,
+                                            Content = "Testing...",
                                             CreatedAt = DateTime.Now,
                                         }
                                     },
