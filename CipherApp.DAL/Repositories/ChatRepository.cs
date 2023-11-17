@@ -25,5 +25,23 @@ namespace CipherApp.DAL.Repositories
             return chats;
         }
 
+        public async Task RemoveUserFromChat(string email, string chatUID)
+        {
+            Chat chat = await _context.Chats
+                .Include(chat => chat.Users)
+                .FirstAsync(e => e.UID == chatUID);
+            
+            User user = await _context.Users
+                .Include(user => user.Chats)
+                .FirstAsync(e => e.Email == email);
+
+            if (user != null && chat != null)
+            {
+                user.Chats.Remove(chat);
+                chat.Users.Remove(user);
+
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
