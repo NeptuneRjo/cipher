@@ -14,5 +14,7 @@ namespace CipherApp.BLL.Services.IServices
         Task<ICollection<ChatDto>> GetChatsByUserAsync(string email);
 
         Task<bool> ChatExistsAsync(string chatUID);
+
+        Task RemoveChatByUserAsync(string email, string UID);
     }
 }

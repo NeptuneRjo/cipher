@@ -87,5 +87,8 @@ namespace CipherApp.BLL.Services
 
         public async Task<bool> ChatExistsAsync(string chatUID) =>
             await _repository.ExistsAsync(chat => chat.UID == chatUID);
+
+        public async Task RemoveChatByUserAsync(string email, string UID) => 
+            await _repository.RemoveUserFromChat(email, UID); 
     }
 }
