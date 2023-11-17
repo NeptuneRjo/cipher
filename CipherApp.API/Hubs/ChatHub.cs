@@ -11,6 +11,8 @@ namespace CipherApp.API.Hubs
         Task JoinGroup(string chatUID);
 
         Task SendMessage(string UID, string content, int userId);
+
+        Task LeaveGroup(string chatUID);
     }
 
     [Authorize]
@@ -42,6 +44,9 @@ namespace CipherApp.API.Hubs
 
         public async Task JoinGroup(string chatUID) =>
             await Groups.AddToGroupAsync(Context.ConnectionId, chatUID);
+
+        public async Task LeaveGroup(string chatUID) =>
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatUID);
 
     }
 }
