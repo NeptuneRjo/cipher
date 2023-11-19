@@ -86,12 +86,13 @@
 
     @* Messages Section *@
     <div id="msg-section" class="d-flex flex-column card py-3 w-100 justify-content-between" style="height: 90vh;">
-        <div class="d-flex flex-column-reverse" style="scrollbar-width: none; overflow-y: scroll;" id="messages" ></div>
+        <div class="d-flex flex-column-reverse flex-grow-1" style="scrollbar-width: none; overflow-y: scroll;" id="messages" ></div>
         @Html.AntiForgeryToken()
         <form id="form" class="p-2 d-flex flex-column align-content-end d-none">
             <input id="form-content" class="form-control" name="Content" disabled />
             <button disabled id="submit-form-btn" class="btn btn-primary my-1">Send Message</button>
         </form>
+        <small id="chat-uid" class="text-muted px-3" style="text-align: right;"></small>
     </div>
 </div>
 
@@ -126,6 +127,8 @@
 
                     $("#leave-chat").removeClass("d-none");
                     $("#leave-chat").prop("disabled", false);
+
+                    $("#chat-uid").text(`Chat UID: ${UID}`);
                 });
             });
         }
