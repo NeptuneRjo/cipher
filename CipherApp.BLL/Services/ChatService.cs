@@ -56,14 +56,12 @@ namespace CipherApp.BLL.Services
             return chatDtos;
         }
 
-        public async Task<ChatDto> CreateChatAsync(ChatInputModel chatInputModel)
+        public async Task<ChatDto> CreateChatAsync(string email)
         {
-            Chat chat = _mapper.Map<Chat>(chatInputModel);
-            Chat addedChat = await _repository.AddEntityAsync(chat);
 
-            ChatDto chatDto = _mapper.Map<ChatDto>(addedChat);
+            Chat chat = await _repository.CreateChatByEmail(email);
 
-            return chatDto;
+            return _mapper.Map<ChatDto>(chat);
         }
 
         public async Task<ChatDto> AddUserAsync(string email, string chatUID)
