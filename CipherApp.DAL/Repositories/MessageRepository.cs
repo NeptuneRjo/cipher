@@ -21,12 +21,15 @@ namespace CipherApp.DAL.Repositories
                     .ThenInclude(msg => msg.User)
                 .FirstAsync(e => e.UID == chatUID);
 
+            User user = await _context.Users.Include(user => user.Messages).FirstAsync(user => user.Id == userId);
+
             Message message = new()
             {
                 Content = content,
                 UserId = userId,
                 ChatId = chat.Id,
                 CreatedAt = DateTime.Now,
+                User = user
             };
 
             await _context.Messages.AddAsync(message);
