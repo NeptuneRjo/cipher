@@ -66,23 +66,11 @@ namespace CipherApp.BLL.Services
             return chatDto;
         }
 
-        public async Task<ChatDto> AddUserAsync(User user, string chatUID)
+        public async Task<ChatDto> AddUserAsync(string email, string chatUID)
         {
-            Chat chat = await _repository.GetByQueryAsync(e => e.UID == chatUID, includes);
+            Chat chat = await _repository.AddUserToChat(email, chatUID);
 
-            if (chat == null)
-            {
-                _logger.LogError($"Chat with the UID = {chatUID} was not found");
-                throw new NotFoundException();
-            }
-
-            chat.Users.Add(user);
-
-            await _repository.SaveChangesAsync();
-
-            Chat updatedChat = await _repository.GetByQueryAsync(e => e.UID == chatUID, includes);
-
-            return _mapper.Map<ChatDto>(updatedChat);
+            return _mapper.Map<ChatDto>(chat);
         }
 
         public async Task<bool> ChatExistsAsync(string chatUID) =>

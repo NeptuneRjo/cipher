@@ -9,7 +9,7 @@ namespace CipherApp.BLL.Services.IServices
     {
         Task<ChatDto> GetChatAsync(string UID);
         Task<ChatDto> CreateChatAsync(ChatInputModel chatInputModel);
-        Task<ChatDto> AddUserAsync(User user, string chatUID);
+        Task<ChatDto> AddUserAsync(string email, string chatUID);
 
         Task<ICollection<ChatDto>> GetChatsByUserAsync(string email);
 
