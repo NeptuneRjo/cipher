@@ -36,26 +36,14 @@ namespace CipherApp.API.Pages.Chat
 
             try
             {
-                bool chatExists = await _chatService.ChatExistsAsync(JoinInput.UID);
-
-                if (!chatExists)
-                    return NotFound();
-
                 string email = User.FindFirst(ClaimTypes.Email)?.Value;
-                int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                ChatDto chat = await _chatService.AddUserAsync(email, JoinInput.UID);
 
-                // Redundancies for instances where email might not be available
-                User user = email.IsNullOrEmpty()
-                    ? await _userService.GetUserAsync(email)
-                    : await _userService.GetUserAsync(userId);
-
-                // Add User to chat
-                ChatDto chat = await _chatService.AddUserAsync(user, JoinInput.UID);
-
-                return RedirectToPage("./Index", new { id = JoinInput.UID });
+                return RedirectToPage("./Index");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 ModelState.AddModelError("ApplicationError", "Something went wrong");
             }
 
