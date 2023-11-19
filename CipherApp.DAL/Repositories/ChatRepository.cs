@@ -14,6 +14,24 @@ namespace CipherApp.DAL.Repositories
             _context = context;
         }
 
+        public async Task<Chat> AddUserToChat(string email, string chatUID)
+        {
+            Chat chat = await _context.Chats.Include(chat => chat.Users).FirstAsync(chat => chat.UID == chatUID);
+            User user = await _context.Users.Include(user => user.Chats).FirstAsync(user => user.Email == email);
+
+            if (user == null || chat == null) 
+            {
+                throw new Exception();
+            }
+
+            chat.Users.Add(user);
+            user.Chats.Add(chat);
+
+            await _context.SaveChangesAsync();
+
+            return chat;
+        }
+
         public async Task<ICollection<Chat>> GetChatsByEmail(string email)
         {
             ICollection<Chat> chats = await _context.Chats
