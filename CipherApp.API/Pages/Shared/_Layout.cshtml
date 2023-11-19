@@ -29,6 +29,12 @@
                                 <div class="nav-link text-dark">Welcome, @User.FindFirst(ClaimTypes.Name)?.Value</div>
                             </li>
                             <li>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Chat/Join">Join Room</a>
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Chat/Create">Create Room</a>
+                            </li>
+                            <li>
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Auth/Signout">Signout</a>
                             </li>
                         } else
