@@ -9,5 +9,7 @@ namespace CipherApp.DAL.Repositories.IRepositories
         Task RemoveUserFromChat(string email, string chatUID);
 
         Task<Chat> AddUserToChat(string email, string chatUID);
+
+        Task<Chat> CreateChatByEmail(string email);
     }
 }
