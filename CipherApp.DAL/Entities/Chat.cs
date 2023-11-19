@@ -13,6 +13,7 @@
         public Chat()
         {
             CreatedAt = DateTime.Now;
+            LastMessage = DateTime.Now;
         }
     }
 }
