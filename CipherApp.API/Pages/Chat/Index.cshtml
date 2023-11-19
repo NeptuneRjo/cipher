@@ -55,6 +55,7 @@
 
 }
 
+@* Styling *@
 <style>
     .clickable {
         cursor: pointer;
@@ -63,6 +64,10 @@
     .not-clickable {
         cursor: not-allowed;
     }
+
+    .box-shadow {
+        box-shadow: 0px 0px .5rem rgba(0, 0, 0, .05);
+    }
 </style>
 
 <div class="d-flex justify-content-between align-items-center">
@@ -70,7 +75,7 @@
     <div class="container" style="height: 90vh; width: 30%;">
         <div class="row">
             <div class="col-4 w-100">
-                <div class="card" style="height: 90vh; scrollbar-width: none; overflow-y: scroll;">
+                <div class="card box-shadow" style="height: 90vh; scrollbar-width: none; overflow-y: scroll;">
                     <div class="card-body">
                         <ul class="list-group">
                             @foreach (var Chat in IndexModel.Chats)
@@ -95,7 +100,7 @@
     </div>
 
     @* Messages Section *@
-    <div id="msg-section" class="d-flex flex-column card py-3 w-100 justify-content-between" style="height: 90vh;">
+    <div id="msg-section" class="d-flex flex-column card py-3 w-100 justify-content-between box-shadow" style="height: 90vh;">
         <div class="d-flex flex-column-reverse flex-grow-1" style="scrollbar-width: none; overflow-y: scroll;" id="messages" ></div>
         @Html.AntiForgeryToken()
         <form id="form" class="p-2 d-flex flex-column align-content-end d-none">
@@ -117,8 +122,7 @@
 
         connection.start().then(function() {
             $(document).on("mouseenter", "#chat", function() {
-                $(this).removeClass("not-clickable");
-                $(this).addClass("clickable");
+                $(this).removeClass("not-clickable").addClass("clickable");;
             })
         });
 
@@ -130,27 +134,26 @@
             }
 
             connection.invoke("JoinGroup", chatUID).then(function() {
-                $("#messages").html("");
-                $("#messages").load("/Chat/MessagesPartial/" + chatUID, function() {
-                    $("#submit-form-btn").prop("disabled", false);
-                    $("#form-content").prop("disabled", false);
+                $("#messages")
+                    .html("")
+                    .load("/Chat/MessagesPartial/" + chatUID, function() {
+                        $("#submit-form-btn").prop("disabled", false);
+                        $("#form-content").prop("disabled", false);
 
-                    $("#form").removeClass("d-none");
+                        $("#form").removeClass("d-none");
 
-                    UID = "";
-                    UID = chatUID;
+                        UID = "";
+                        UID = chatUID;
 
-                    $("#leave-chat").removeClass("d-none");
-                    $("#leave-chat").prop("disabled", false);
+                        $("#leave-chat").removeClass("d-none").prop("disabled", false);
 
-                    $("#chat-uid").text(`Chat UID: ${UID}`);
-                });
+                        $("#chat-uid").text(`Chat UID: ${UID}`);
+                    });
             });
         }
 
         function updateMessagesPartial(partial) {
-            $("#messages").html("");
-            $("#messages").html(partial);
+            $("#messages").html("").html(partial);
         }
 
         connection.on("ReceiveMessage", function(message) {
