@@ -1,4 +1,5 @@
-﻿using CipherApp.BLL.Services.IServices;
+﻿using CipherApp.API.Utilities;
+using CipherApp.BLL.Services.IServices;
 using CipherApp.DAL.Models;
 using CipherApp.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +30,9 @@ namespace CipherApp.API.Hubs
         {
             try
             {
-                MessageDto message = await _msgService.AddMessageAsync(UID, content, userID);
+                string encryptedMessage = AesOperation.EncryptString(content);
+
+                MessageDto message = await _msgService.AddMessageAsync(UID, encryptedMessage, userID);
 
                 await Clients.Group(UID).SendAsync("ReceiveMessage", message);
 
