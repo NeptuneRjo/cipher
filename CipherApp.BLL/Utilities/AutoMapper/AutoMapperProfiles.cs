@@ -14,8 +14,6 @@ namespace Cipher.BLL.Utilities.AutoMapper
          
             CreateMap<RegisterInputModel, User>();
 
-            CreateMap<MessageInputModel, Message>();
-
             CreateMap<User, UserDto>();
 
             CreateMap<Chat, ChatDto>();
