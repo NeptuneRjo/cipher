@@ -3,9 +3,7 @@ using CipherApp.BLL.Services;
 using CipherApp.BLL.Services.IServices;
 using CipherApp.DAL.Entities;
 using CipherApp.DAL.Repositories.IRepositories;
-using CipherApp.DTO.Request;
 using CipherApp.DTO.Response;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.Linq.Expressions;
@@ -25,54 +23,8 @@ namespace CipherApp.Test.Services
         private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
         private readonly ILogger<AuthService> _logger;
-        private readonly IConfiguration _config;
 
         private readonly ITestOutputHelper _output;
-
-        private readonly User _mockUser = new()
-        {
-            Id = 1,
-            Password = BCrypt.HashPassword("password", BCrypt.GenerateSalt()),
-            Username = "username",
-            CreatedAt = new DateTime(),
-            ChatUsers = new List<ChatUser>(),
-            Messages = new List<Message>(),
-        };
-
-        private readonly UserDto _mockUserDto = new()
-        {
-            Id = 1,
-            Username = "username",
-            CreatedAt = new DateTime(),
-            Chats = new List<ChatListDto>(),
-            Messages = new List<MessageDto>(),
-        };
-
-        private readonly UserToLoginDto _mockUserToLogin = new UserToLoginDto()
-        {
-            username = "username",
-            password = "password"
-        };
-
-        private readonly UserToRegisterDto _mockUserToRegister = new UserToRegisterDto()
-        {
-            Username = "username",
-            Password = "password"
-        };
-
-        private readonly LoginInputModel _mockLoginInputModel = new LoginInputModel()
-        {
-            Username = "username",
-            Password = "password"
-        };
-
-        private readonly RegisterInputModel _mockRegisterInputModel = 
-            new RegisterInputModel()
-        {
-                Username = "username",
-                Password = "password",
-                Password2 = "password"
-        };
 
         public AuthServiceTests(ITestOutputHelper output)
         {
@@ -81,12 +33,40 @@ namespace CipherApp.Test.Services
             _logger = Substitute.For<ILogger<AuthService>>();
             _repository = Substitute.For<IUserRepository>();
             _mapper = Substitute.For<IMapper>();
-            _config = Substitute.For<IConfiguration>();
 
-            _service = new AuthService(_mapper, _logger, _repository, _config);
-
-            _config["Jwt:Key"].Returns("dyJhbGciOiJIUzI1Ni99.eyJSb3dlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCD5TY5MzE3OTg4MiwiaWF0IjoxNjkzMTc5ODgyfQ.lww5Z0eGLvW2h_GXjnDZXnF_3ld2WADb3cye-fTaIlU");
+            _service = new AuthService(_mapper, _logger, _repository);
         }
+
+        private readonly User _mockUser = new()
+        {
+            Id = 1,
+            Username = "testUsername",
+            Email = "test@email.com",
+            Password = BCrypt.HashPassword("password"),
+            Messages = new List<Message>(),
+            Chats = new List<Chat>(),
+        };
+
+        private readonly UserDto _mockUserDto = new()
+        {
+            Id = 1,
+            Username = "testUsername",
+            Email = "test@email.com",
+        };
+
+        private readonly LoginInputModel _loginModel = new()
+        {
+            Email = "test@email.com",
+            Password = "password",
+        };
+
+        private readonly RegisterInputModel _registerModel = new()
+        {
+            Username = "testUsername",
+            Email = "test@email.com",
+            Password = "password",
+            ConfirmPassword = "password"
+        };
 
         [Fact]
         public async Task LoginAsync_WhenSuccess_ReturnsDto()
@@ -94,14 +74,15 @@ namespace CipherApp.Test.Services
             _repository
                 .GetByQueryAsync(
                     Arg.Any<Expression<Func<User, bool>>>(),
-                    Arg.Any<Expression<Func<User, object>>[]>()
-                    )
-                .Returns(Task.FromResult(_mockUser));
+                    Arg.Any<Expression<Func<User, object>>[]>())
+                .Returns(_mockUser);
+
             _mapper.Map<UserDto>(_mockUser).Returns(_mockUserDto);
 
-            var result = await _service.LoginAsync(_mockLoginInputModel);
+            var result = await _service.LoginAsync(_loginModel);
 
             Assert.NotNull(result);
+            Assert.Equivalent(result, _mockUserDto, strict: true);
         }
 
         [Fact]
@@ -110,40 +91,44 @@ namespace CipherApp.Test.Services
             _repository
                 .GetByQueryAsync(
                     Arg.Any<Expression<Func<User, bool>>>(),
-                    Arg.Any<Expression<Func<User, object>>[]>()
-                    )
-                .Returns(Task.FromResult(_mockUser));
-            _mapper.Map<UserDto>(_mockUser).Returns(_mockUserDto);
+                    Arg.Any<Expression<Func<User, object>>[]>())
+                .Returns(_mockUser);
+
+            LoginInputModel failingInputModel = new()
+            {
+                Email = "test@email.com",
+                Password = "incorrectPassword"
+            };
 
             await Assert.ThrowsAsync<LoginFailedException>(
-                () => _service.LoginAsync(new LoginInputModel()
-                {
-                    Username = "username",
-                    Password = "test"
-                }));
+                () => _service.LoginAsync(failingInputModel));
         }
 
         [Fact]
         public async Task LoginAsync_WhenUserNotFound_ThrowsNotFoundException()
         {
             await Assert.ThrowsAsync<NotFoundException>(
-                () => _service.LoginAsync(_mockLoginInputModel));
+                () => _service.LoginAsync(_loginModel));
         }
 
         [Fact]
         public async Task RegisterAsync_WhenSuccessful_ReturnsUser()
         {
-            _mapper.Map<User>(_mockRegisterInputModel).Returns(_mockUser);
-            _mapper.Map<UserDto>(_mockUser).Returns(_mockUserDto);
+            _repository
+                .ExistsAsync(Arg.Any<Expression<Func<User, bool>>>())
+                .Returns(false);
 
             _repository
                 .AddEntityAsync(Arg.Any<User>())
                 .Returns(_mockUser);
 
-            var result = await _service.RegisterAsync(_mockRegisterInputModel);
+            _mapper.Map<User>(Arg.Any<RegisterInputModel>()).Returns(_mockUser);
+            _mapper.Map<UserDto>(Arg.Any<User>()).Returns(_mockUserDto);
+
+            var result = await _service.RegisterAsync(_registerModel);
 
             Assert.NotNull(result);
-            Assert.Equivalent(result, _mockUserDto, strict: true);
+            Assert.Equivalent(result, _mockUserDto);
         }
 
         [Fact]
@@ -153,9 +138,8 @@ namespace CipherApp.Test.Services
                 .ExistsAsync(Arg.Any<Expression<Func<User, bool>>>())
                 .Returns(true);
 
-            await Assert
-                .ThrowsAsync<UserExistsException>(() => 
-                    _service.RegisterAsync(_mockRegisterInputModel));
+            await Assert.ThrowsAsync<UserExistsException>(
+                () => _service.RegisterAsync(_registerModel));
         }
     }
 }
