@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using CipherApp.DAL.Entities;
 using CipherApp.DTO.Response;
 using CipherApp.BLL.Utilities.CustomExceptions;
-using CipherApp.DTO.Request;
+using CipherApp.DAL.Models;
 
 namespace CipherApp.Test.Services
 {
@@ -26,30 +26,21 @@ namespace CipherApp.Test.Services
         private readonly Chat _mockChat = new Chat()
         {
             Id = 1,
-            Name = "Test",
-            OwnerId = 1,
+            UID = "1234ABC",
             LastMessage = new DateTime(),
-            ChatUsers = new List<ChatUser>()
-            {
-                new ChatUser()
-                    {
-                        User = new User()
-                        {
-                            Username = "Test",
-                        }
-                    }
-                },
+            CreatedAt = new DateTime(),
             Messages = new List<Message>(),
+            Users = new List<User>(),
         };
 
         private readonly ChatDto _mockChatDto = new ChatDto()
         {
             Id = 1,
-            Name = "Test",
-            OwnerId = 1,
+            UID = "1234ABC",
             LastMessage = new DateTime(),
-            Users = new List<UserDto>(),
+            CreatedAt = new DateTime(),
             Messages = new List<MessageDto>(),
+            Users = new List<UserDto>(),
         };
 
         public ChatServiceTests()
@@ -66,13 +57,12 @@ namespace CipherApp.Test.Services
         {
             _repository.GetByQueryAsync(
                 Arg.Any<Expression<Func<Chat, bool>>>(), 
-                Arg.Any<Expression<Func<Chat, object>>[]>()
-                )
+                Arg.Any<Expression<Func<Chat, object>>[]>())
                 .Returns(Task.FromResult(_mockChat));
 
             _mapper.Map<ChatDto>(_mockChat).Returns(_mockChatDto);
 
-            var result = await _service.GetChatAsync(1, "Test");
+            var result = await _service.GetChatAsync("test");
 
             Assert.NotNull(result);
             Assert.Equivalent(result, _mockChatDto, strict: true);
@@ -82,45 +72,98 @@ namespace CipherApp.Test.Services
         public async Task GetChatAsync_WhenChatNotFound_ThrowsNotFoundException()
         {
             await Assert.ThrowsAsync<NotFoundException>(
-                () => _service.GetChatAsync(1, "test")
-                );
-        }
-
-        [Fact]
-        public async Task GetChatAsync_WhenUserNotInChat_ThrowsUnauthorizedAccessException()
-        {
-            Chat chat = new()
-            {
-                Id = 1,
-                Name = "Test",
-                OwnerId = 1,
-                LastMessage = new DateTime(),
-                ChatUsers = new List<ChatUser>(),
-                Messages = new List<Message>(),
-            };
-
-            _repository.GetByQueryAsync(
-                Arg.Any<Expression<Func<Chat, bool>>>(),
-                Arg.Any<Expression<Func<Chat, object>>[]>()
-                )
-                .Returns(Task.FromResult(chat));
-
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(
-                () => _service.GetChatAsync(1, "test")
-                );
+                () => _service.GetChatAsync("test"));
         }
 
         [Fact]
         public async Task CreateChatAsync_WhenSuccess_ReturnsDto()
         {
-            _repository.AddEntityAsync(Arg.Any<Chat>()).Returns(Task.FromResult(_mockChat));
+            Chat mockChat = new()
+            {
+                Id = 1,
+                UID = "1234ABC",
+                LastMessage = new DateTime(),
+                CreatedAt = new DateTime(),
+                Messages = new List<Message>(),
+                Users = new List<User>()
+                {
+                    new User()
+                    {
+                        Id = 1,
+                        Email = "test@email.com",
+                        Username = "Username",
+                        Password = "password",
+                        Messages = new List<Message>()
+                    }
+                },
+            };
+
+            ChatDto mockChatDto = new()
+            {
+                Id = 1,
+                UID = "1234ABC",
+                LastMessage = new DateTime(),
+                CreatedAt = new DateTime(),
+                Messages = new List<MessageDto>(),
+                Users = new List<UserDto>()
+                {
+                    new UserDto()
+                    {
+                        Id = 1,
+                        Email = "test@email.com",
+                        Username = "username",
+                    }
+                }
+            };
+
+            _repository.CreateChatByEmail("test@email.com").Returns(mockChat);
+
+            _mapper.Map<ChatDto>(Arg.Any<Chat>()).Returns(mockChatDto);
+
+            var result = await _service.CreateChatAsync("test@email.com");
+
+            Assert.NotNull(result);
+            Assert.Equivalent(result, mockChatDto, strict: true);
+        }
+
+        [Fact]
+        public async Task GetChatsByUserAsync_WhenSuccess_ReturnsDtos()
+        {
+            _repository.GetAllByQueryAsync(
+                Arg.Any<Expression<Func<Chat, bool>>>(),
+                Arg.Any<Expression<Func<Chat, object>>[]>())
+                .Returns(new List<Chat>() { _mockChat, _mockChat });
+
+            _mapper.Map<ICollection<ChatDto>>(Arg.Any<ICollection<Chat>>())
+                .Returns(new List<ChatDto>() { _mockChatDto, _mockChatDto });
+
+            var result = await _service.GetChatsByUserAsync("test@email.com");
+
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
+        public async Task AddUserAsync_WhenSuccess_ReturnsDto()
+        {
+            _repository.AddUserToChat("test@email.com", "123ABC").Returns(_mockChat);
 
             _mapper.Map<ChatDto>(Arg.Any<Chat>()).Returns(_mockChatDto);
 
-            var result = await _service.CreateChatAsync(new ChatToCreateDto(), 1);
+            var result = await _service.AddUserAsync("test@email.com", "123ABC");
 
             Assert.NotNull(result);
             Assert.Equivalent(result, _mockChatDto, strict: true);
+        }
+
+        [Fact]
+        public async Task ChatExistsAsync_WhenSuccess_ReturnsTrue()
+        {
+            _repository.ExistsAsync(Arg.Any<Expression<Func<Chat, bool>>>()).Returns(true);
+
+            var result = await _service.ChatExistsAsync("123ABC");
+
+            Assert.True(result);
         }
     }
 }
