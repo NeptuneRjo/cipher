@@ -1,4 +1,5 @@
-﻿@using CipherApp.DTO.Response;
+﻿@using CipherApp.API.Utilities;
+@using CipherApp.DTO.Response;
 @using System.Security.Claims;
 @model ICollection<MessageDto>
 
@@ -17,7 +18,7 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <p class="card-subtitle text-muted">@Message.CreatedAt</p>
-                        <p class="card-text">@Message.Content</p>
+                        <p class="card-text">@AesOperation.DecryptString(Message.Content)</p>
                         <p class="card-subtitle text-muted">@Message.User.Username</p>
                     </div>
                 </div>
