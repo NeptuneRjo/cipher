@@ -2,7 +2,6 @@
 using CipherApp.BLL.Services.IServices;
 using CipherApp.BLL.Utilities.CustomExceptions;
 using CipherApp.DAL.Entities;
-using CipherApp.DAL.Models;
 using CipherApp.DAL.Repositories.IRepositories;
 using CipherApp.DTO.Response;
 using Microsoft.Extensions.Logging;
@@ -32,7 +31,7 @@ namespace CipherApp.BLL.Services
             e => e.Messages, e => e.Users
         };
 
-        public async Task<ChatDto> GetChatAsync(string UID)
+        private async Task<Chat> GetChatByUidAsync(string UID)
         {
             Chat chat = await _repository.GetByQueryAsync(e => e.UID == UID, includes);
 
@@ -42,18 +41,21 @@ namespace CipherApp.BLL.Services
                 throw new NotFoundException();
             }
 
-            ChatDto chatDto = _mapper.Map<ChatDto>(chat);
+            return chat;
+        }
 
-            return chatDto;
+        public async Task<ChatDto> GetChatAsync(string UID)
+        {
+            Chat chat = await GetChatByUidAsync(UID);
+
+            return _mapper.Map<ChatDto>(chat);
         }
 
         public async Task<ICollection<ChatDto>> GetChatsByUserAsync(string email)
         {
-            ICollection<Chat> chats = await _repository.GetChatsByEmail(email);
+            ICollection<Chat> chats = await _repository.GetAllByQueryAsync(e => e.Users.Any(u => u.Email == email), includes);
 
-            ICollection<ChatDto> chatDtos = _mapper.Map<ICollection<ChatDto>>(chats);
-
-            return chatDtos;
+            return _mapper.Map<ICollection<ChatDto>>(chats);
         }
 
         public async Task<ChatDto> CreateChatAsync(string email)
