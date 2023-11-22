@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using CipherApp.BLL.Utilities.CustomExceptions;
 using CipherApp.DAL.Entities;
 using CipherApp.DTO.Response;
-using Microsoft.Extensions.Configuration;
 using CipherApp.DAL.Models;
 
 namespace CipherApp.BLL.Services
@@ -29,47 +28,60 @@ namespace CipherApp.BLL.Services
             _repository = repository;
         }
 
-        public async Task<UserDto> LoginAsync(LoginInputModel input)
+        private async Task CheckIfUserExists(string email)
+        {
+            bool exists = await _repository.ExistsAsync(e => e.Email == email);
+
+            if (exists)
+            {
+                throw new UserExistsException();
+            }
+        }
+
+        private string EncryptPassword(string password) =>
+            BCrypt.HashPassword(password, BCrypt.GenerateSalt());
+
+        private async Task<User> GetUserByEmailAsync(string email)
         {
             User user = await _repository
-                .GetByQueryAsync(e => e.Email == input.Email);
+                .GetByQueryAsync(e => e.Email == email);
 
             if (user == null)
             {
-                _logger.LogError($"User with the email = {input.Email} was not found");
+                _logger.LogError($"User with the email = {email} was not found");
                 throw new NotFoundException();
             }
 
-            bool validated = user.ValidatePassword(input.Password);
+            return user;
+        }
 
-            if (!validated)
+        private void ValidateUser(User user, string password)
+        {
+            if(!BCrypt.Verify(password, user.Password))
+            {
                 throw new LoginFailedException();
+            }
+        }
 
-            UserDto userToReturn = _mapper.Map<UserDto>(user);
+        public async Task<UserDto> LoginAsync(LoginInputModel input)
+        {
+            User user = await GetUserByEmailAsync(input.Email);
 
-            return userToReturn;
+            ValidateUser(user, input.Password);
+
+            return _mapper.Map<UserDto>(user);
         }
 
         public async Task<UserDto> RegisterAsync(RegisterInputModel input)
         {
-
-            bool alreadyInUse = await _repository
-                .ExistsAsync(e => e.Email == input.Email);
-
-            if (alreadyInUse)
-                throw new UserExistsException();
+            await CheckIfUserExists(input.Email);
 
             User user = _mapper.Map<User>(input);
             user.Password = EncryptPassword(user.Password);
 
             await _repository.AddEntityAsync(user);
 
-            UserDto userDto = _mapper.Map<UserDto>(user);
-
-            return userDto;
+            return _mapper.Map<UserDto>(user);
         }
-
-        private string EncryptPassword(string password) =>
-            BCrypt.HashPassword(password, BCrypt.GenerateSalt());
     }
 }
