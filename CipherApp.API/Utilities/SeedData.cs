@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CipherApp.DAL.Data
+namespace CipherApp.BLL.Utilities
 {
     using BCrypt.Net;
+    using CipherApp.API.Utilities;
+    using CipherApp.DAL.Data;
 
     public static class SeedData
     {
@@ -40,35 +42,35 @@ namespace CipherApp.DAL.Data
                                         {
                                             ChatId = 1,
                                             UserId = 2,
-                                            Content = "Hello World!",
+                                            Content = AesOperation.EncryptString("Hello World!"),
                                             CreatedAt = DateTime.Now,
                                         },
                                         new Message()
                                         {
                                             ChatId = 1,
                                             UserId = 2,
-                                            Content = "Msg two",
+                                            Content = AesOperation.EncryptString("Msg two"),
                                             CreatedAt = DateTime.Now,
                                         },
                                         new Message()
                                         {
                                             ChatId = 1,
                                             UserId = 2,
-                                            Content = "Msg three",
+                                            Content = AesOperation.EncryptString("Msg three"),
                                             CreatedAt = DateTime.Now,
                                         },
                                         new Message()
                                         {
                                             ChatId = 1,
                                             UserId = 2,
-                                            Content = "Msg four",
+                                            Content = AesOperation.EncryptString("Msg four"),
                                             CreatedAt = DateTime.Now,
                                         },
                                         new Message()
                                         {
                                             ChatId = 1,
                                             UserId = 2,
-                                            Content = "Msg five",
+                                            Content = AesOperation.EncryptString("Msg five"),
                                             CreatedAt = DateTime.Now,
                                         }
                                         }
@@ -85,14 +87,14 @@ namespace CipherApp.DAL.Data
                                         {
                                             ChatId = 1,
                                             UserId = 1,
-                                            Content = "GoodBye!",
+                                            Content = AesOperation.EncryptString("GoodBye!"),
                                             CreatedAt = DateTime.Now,
                                         },
                                         new Message()
                                         {
                                             ChatId = 1,
                                             UserId = 1,
-                                            Content = "Testing...",
+                                            Content = AesOperation.EncryptString("Testing..."),
                                             CreatedAt = DateTime.Now,
                                         }
                                     },
