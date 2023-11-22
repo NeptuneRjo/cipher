@@ -1,4 +1,5 @@
 ﻿@page "{handler?}/{UID?}/{Content?}"
+@using CipherApp.API.Utilities;
 @using CipherApp.DTO.Response;
 @using System.Security.Claims;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
@@ -8,11 +9,20 @@
 }
 
 @functions {
-    public string ShortenContent(string content) =>
-        content.Length <= 12 ? content : content.Substring(0, 12) + "...";
 
     public string ShortenTime(DateTime time) =>
         time.ToString().Split(" ")[0];
+    
+    public string ShortenContent(string cipherText)
+    {
+        string decryptedContent = AesOperation.DecryptString(cipherText);
+
+        string substring = decryptedContent.Length <= 12 
+            ? decryptedContent 
+            : decryptedContent.Substring(0, 12) + "...";
+
+        return substring;
+    }
 
     public string ConcatUsers(ICollection<UserDto> users)
     {
