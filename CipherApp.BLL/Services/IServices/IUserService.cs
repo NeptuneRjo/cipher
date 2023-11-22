@@ -7,8 +7,5 @@ namespace CipherApp.BLL.Services.IServices
     {
         Task<User> GetUserAsync(int id);
         Task<User> GetUserAsync(string email);
-
-        Task<UserDto> AuthUserAsync(string username, string password);
-        Task<UserDto> AuthUserAsync(int id, string password);
     }
 }
