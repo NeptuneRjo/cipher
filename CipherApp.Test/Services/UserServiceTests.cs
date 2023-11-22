@@ -26,18 +26,16 @@ namespace CipherApp.Test.Services
             Id = 1,
             Password = "password",
             Username = "username",
-            CreatedAt = new DateTime(),
-            ChatUsers = new List<ChatUser>(),
             Messages = new List<Message>(),
+            Chats = new List<Chat>(),
+            Email = "test@email.com"
         };
 
         private readonly UserDto _mockUserDto = new()
         {
             Id = 1,
             Username = "username",
-            CreatedAt = new DateTime(),
-            Chats = new List<ChatListDto>(),
-            Messages = new List<MessageDto>(),
+            Email = "test@email.com"
         };
 
         public UserServiceTests(ITestOutputHelper output)
@@ -52,23 +50,18 @@ namespace CipherApp.Test.Services
         }
 
         [Fact]
-        public async Task GetUserAsync_ByUsername_WhenSuccess_ReturnsDto()
+        public async Task GetUserAsync_ByEmail_WhenSuccess_ReturnsDto()
         {
             _repository
                 .GetByQueryAsync(
                     Arg.Any<Expression<Func<User, bool>>>(), 
-                    Arg.Any<Expression<Func<User, object>>[]>()
-                    )
-                .Returns(Task.FromResult(_mockUser));
+                    Arg.Any<Expression<Func<User, object>>[]>())
+                .Returns(_mockUser);
 
-            _mapper
-                .Map<UserDto>(_mockUser)
-                .Returns(_mockUserDto);
-
-            var result = await _service.GetUserAsync("test");
+            var result = await _service.GetUserAsync("test@email.com");
 
             Assert.NotNull(result);
-            Assert.Equivalent(result, _mockUserDto, strict: true);
+            Assert.Equivalent(result, _mockUser, strict: true);
         }
 
         [Fact]
@@ -77,50 +70,25 @@ namespace CipherApp.Test.Services
             _repository
                 .GetByQueryAsync(
                     Arg.Any<Expression<Func<User, bool>>>(),
-                    Arg.Any<Expression<Func<User, object>>[]>()
-                    )
-                .Returns(Task.FromResult(_mockUser));
-
-            _mapper
-                .Map<UserDto>(_mockUser)
-                .Returns(_mockUserDto);
+                    Arg.Any<Expression<Func<User, object>>[]>())
+                .Returns(_mockUser);
 
             var result = await _service.GetUserAsync(1);
 
             Assert.NotNull(result);
-            Assert.Equivalent(result, _mockUserDto, strict: true);
+            Assert.Equivalent(result, _mockUser, strict: true);
         }
 
         [Fact]
-        public async Task GetUserAsync_ByUsername_WhenNotFound_ThrowsNotFoundException()
+        public async Task GetUserAsync_ByEmail_WhenNotFound_ThrowsNotFoundException()
         {
-            Assert.ThrowsAsync<NotFoundException>(() => _service.GetUserAsync("test"));
+            await Assert.ThrowsAsync<NotFoundException>(() => _service.GetUserAsync(""));
         }
 
         [Fact]
         public async Task GetUserAsync_ById_WhenNotFound_ThrowsNotFoundException()
         {
-            Assert.ThrowsAsync<NotFoundException>(() => _service.GetUserAsync(1));
-        }
-
-        [Fact]
-        public async Task AuthUserAsync_ByUsername_WhenMatch_ReturnsDto()
-        {
-            _repository
-                .GetByQueryAsync(
-                    Arg.Any<Expression<Func<User, bool>>>(),
-                    Arg.Any<Expression<Func<User, object>>[]>()
-                    )
-                .Returns(Task.FromResult(_mockUser));
-
-            _mapper
-                .Map<UserDto>(_mockUser)
-                .Returns(_mockUserDto);
-
-            var result = await _service
-                .AuthUserAsync(_mockUser.Username, _mockUser.Password);
-
-            Assert.NotNull(result);
+            await Assert.ThrowsAsync<NotFoundException>(() => _service.GetUserAsync(1));
         }
     }
 }
