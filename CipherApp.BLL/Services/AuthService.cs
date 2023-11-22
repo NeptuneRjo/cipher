@@ -19,25 +19,19 @@ namespace CipherApp.BLL.Services
         private readonly IMapper _mapper;
         private readonly ILogger<AuthService> _logger;
 
-        private readonly IConfiguration _config;
-
         public AuthService(
             IMapper mapper, 
             ILogger<AuthService> logger, 
-            IUserRepository repository,
-            IConfiguration config
-            )
+            IUserRepository repository)
         {
             _mapper = mapper;
             _logger = logger;
             _repository = repository;
-
-            _config = config;
         }
 
         public async Task<UserDto> LoginAsync(LoginInputModel input)
         {
-            var user = await _repository
+            User user = await _repository
                 .GetByQueryAsync(e => e.Email == input.Email);
 
             if (user == null)
