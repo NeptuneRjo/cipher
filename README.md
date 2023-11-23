@@ -54,7 +54,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Cipher Demo Gif][product-screenshot]](cipher-demo.gif)
+![Cipher Demo Gif](cipher-demo.gif)
 
 Cipher seamlessly integrates the power of Razor Pages for a sleek user interface while prioritizing user privacy by encrypting messages from sender to recipient, 
 ensuring confidential real-time communication. 
@@ -149,7 +149,6 @@ The app is broken up into these projects:
 [license-url]: https://github.com/NeptuneRjo/cipher/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
