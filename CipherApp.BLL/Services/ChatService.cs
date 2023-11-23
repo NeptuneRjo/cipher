@@ -53,7 +53,7 @@ namespace CipherApp.BLL.Services
 
         public async Task<ICollection<ChatDto>> GetChatsByUserAsync(string email)
         {
-            ICollection<Chat> chats = await _repository.GetAllByQueryAsync(e => e.Users.Any(u => u.Email == email), includes);
+            ICollection<Chat> chats = await _repository.GetChatsByEmail(email);
 
             return _mapper.Map<ICollection<ChatDto>>(chats);
         }
