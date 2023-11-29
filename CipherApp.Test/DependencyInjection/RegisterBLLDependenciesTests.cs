@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Cipher.BLL;
+using CipherApp.BLL;
 using CipherApp.BLL.Services.IServices;
 using CipherApp.DAL;
 using Microsoft.AspNetCore.Authentication;
