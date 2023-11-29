@@ -165,5 +165,13 @@ namespace CipherApp.Test.Services
 
             Assert.True(result);
         }
+
+        [Fact]
+        public async Task RemoveChatByUserAsync_WhenSuccess_RemovesUser()
+        {
+            await _service.RemoveChatByUserAsync("test@email.com", "1234ABC");
+
+            await _repository.Received().RemoveUserFromChat("test@email.com", "1234ABC");
+        }
     }
 }
