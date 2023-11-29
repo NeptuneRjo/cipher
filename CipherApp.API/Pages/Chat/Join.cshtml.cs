@@ -13,23 +13,18 @@ namespace CipherApp.API.Pages.Chat
     [Authorize]
     public class JoinModel : PageModel
     {
-        private readonly IChatService _chatService;
-        private readonly IUserService _userService;
+        private readonly IChatService _service;
 
-        public JoinModel(IChatService chatService, IUserService userService)
+        public JoinModel(IChatService service)
         {
-            _chatService = chatService;
-            _userService = userService;
+            _service = service;
         }
-
-        [BindProperty]
-        public JoinInputModel JoinInput { get; set; }
 
         public void OnGet()
         {
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string UID)
         {
             if (!ModelState.IsValid)
                 return Page();
@@ -37,7 +32,7 @@ namespace CipherApp.API.Pages.Chat
             try
             {
                 string email = User.FindFirst(ClaimTypes.Email)?.Value;
-                ChatDto chat = await _chatService.AddUserAsync(email, JoinInput.UID);
+                ChatDto chat = await _service.AddUserAsync(email, UID);
 
                 return RedirectToPage("./Index");
             }
