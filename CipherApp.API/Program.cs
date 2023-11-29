@@ -1,9 +1,8 @@
-using Cipher.BLL;
+using CipherApp.BLL;
 using CipherApp.API;
 using CipherApp.API.Hubs;
 using CipherApp.BLL.Utilities;
 using CipherApp.DAL;
-using CipherApp.DAL.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
