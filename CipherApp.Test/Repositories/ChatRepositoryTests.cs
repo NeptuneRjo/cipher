@@ -72,6 +72,38 @@ namespace CipherApp.Test.Repositories
             Assert.NotEqual(result.Users.Count(), 1);
         }
 
+        [Fact]
+        public async Task RemoveUserFromChat_ReturnsOldChat_IfNoUser()
+        {
+            Chat mockChat = new()
+            {
+                CreatedAt = DateTime.UtcNow,
+                UID = "ABC1234",
+                Messages = new List<Message>(),
+                Users = new List<User>()
+                {
+                    TestEntities._mockUser
+                },
+                LastMessage = DateTime.UtcNow,
+            };
+
+            _context.Chats.Add(mockChat);
+            _context.SaveChanges();
+
+            var result = await _repository.RemoveUserFromChat("email@email.com", "ABC1234");
+
+            Assert.NotNull(result);
+            Assert.Equivalent(result, mockChat, strict: true);
+        }
+
+        [Fact]
+        public async Task RemoveUserFromChat_IfNoChat_ReturnsNull()
+        {
+            var result = await _repository.RemoveUserFromChat("email@email.com", "ABC1234");
+
+            Assert.Null(result);
+        }
+
         public void Dispose() => _context.Database.EnsureDeleted();
     }
 }
