@@ -19,6 +19,8 @@ namespace CipherApp.Test.Repositories
 
             _context = new DataContext(options);
 
+            _context.Database.EnsureDeleted();
+
             _context.Users.Add(TestEntities._mockUser);
             _context.Chats.Add(TestEntities._mockChat);
             _context.SaveChanges();
