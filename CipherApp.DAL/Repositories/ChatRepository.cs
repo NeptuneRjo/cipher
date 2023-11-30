@@ -72,11 +72,11 @@ namespace CipherApp.DAL.Repositories
         {
             Chat chat = await _context.Chats
                 .Include(chat => chat.Users)
-                .FirstAsync(e => e.UID == chatUID);
+                .FirstOrDefaultAsync(e => e.UID == chatUID);
             
             User user = await _context.Users
                 .Include(user => user.Chats)
-                .FirstAsync(e => e.Email == email);
+                .FirstOrDefaultAsync(user => user.Email == email);
 
             if (user != null && chat != null)
             {
