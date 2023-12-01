@@ -30,57 +30,40 @@ namespace CipherApp.Test.Services
             _service = new MessageService(_mapper, _logger, _msgRepository, _chatRepository);
         }
 
-        private readonly Chat _mockChat = new()
-        {
-            Id = 1,
-            UID = "1234ABC",
-            LastMessage = new DateTime(),
-            CreatedAt = new DateTime(),
-            Messages = new List<Message>(),
-            Users = new List<User>()
-            {
-                new User()
-                {
-                    Id = 1,
-                    Messages = new List<Message>(),
-                    Chats = new List<Chat>()
-                }
-            },
-        };
-
-        private readonly Message _mockMessage = new()
-        {
-            Id = 1,
-            Content = "Hello World!",
-            User = new User(),
-            Chat = new Chat(),
-            CreatedAt = new DateTime(),
-            ChatId = 1,
-            UserId = 1,
-        };
-
-        private readonly MessageDto _mockMessageDto = new()
-        {
-            Id = 1,
-            Content = "Hello World!",
-            CreatedAt = new DateTime(),
-            User = new UserDto(),
-        };
-
         [Fact]
         public async Task AddMessageAsync_WhenSuccess_ReturnsDto()
         {
+            Chat mockChat = new()
+            {
+                Id = 1,
+                UID = "1234ABC",
+                LastMessage = new DateTime(),
+                CreatedAt = new DateTime(),
+                Messages = new List<Message>(),
+                Users = new List<User>()
+                {
+                    new User()
+                    {
+                        Id = 1,
+                        Messages = new List<Message>(),
+                        Chats = new List<Chat>()
+                    }
+                },
+            };
+
             _chatRepository
                 .GetByQueryAsync(
                     Arg.Any<Expression<Func<Chat, bool>>>(), 
                     Arg.Any<Expression<Func<Chat, object>>[]>())
-                .Returns(_mockChat);
+                .Returns(mockChat);
 
             _msgRepository
                 .AddEntityAsync(Arg.Any<Message>())
-                .Returns(_mockMessage);
+                .Returns(TestEntities._mockMessage);
 
-            _mapper.Map<MessageDto>(Arg.Any<Message>()).Returns(_mockMessageDto);
+            _mapper
+                .Map<MessageDto>(Arg.Any<Message>())
+                .Returns(TestEntities._mockMessageDto);
 
             var result = await _service.AddMessageAsync("ABC1234", "Hello World!", 1);
 
