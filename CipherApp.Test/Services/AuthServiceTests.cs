@@ -8,14 +8,11 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.Linq.Expressions;
 using Xunit.Abstractions;
-
+using CipherApp.BLL.Utilities.CustomExceptions;
+using CipherApp.DAL.Models;
 
 namespace CipherApp.Test.Services
 {
-    using BCrypt.Net;
-    using CipherApp.BLL.Utilities.CustomExceptions;
-    using CipherApp.DAL.Models;
-
     public class AuthServiceTests
     {
         private readonly IAuthService _service;
@@ -37,37 +34,6 @@ namespace CipherApp.Test.Services
             _service = new AuthService(_mapper, _logger, _repository);
         }
 
-        private readonly User _mockUser = new()
-        {
-            Id = 1,
-            Username = "testUsername",
-            Email = "test@email.com",
-            Password = BCrypt.HashPassword("password"),
-            Messages = new List<Message>(),
-            Chats = new List<Chat>(),
-        };
-
-        private readonly UserDto _mockUserDto = new()
-        {
-            Id = 1,
-            Username = "testUsername",
-            Email = "test@email.com",
-        };
-
-        private readonly LoginInputModel _loginModel = new()
-        {
-            Email = "test@email.com",
-            Password = "password",
-        };
-
-        private readonly RegisterInputModel _registerModel = new()
-        {
-            Username = "testUsername",
-            Email = "test@email.com",
-            Password = "password",
-            ConfirmPassword = "password"
-        };
-
         [Fact]
         public async Task LoginAsync_WhenSuccess_ReturnsDto()
         {
@@ -75,14 +41,16 @@ namespace CipherApp.Test.Services
                 .GetByQueryAsync(
                     Arg.Any<Expression<Func<User, bool>>>(),
                     Arg.Any<Expression<Func<User, object>>[]>())
-                .Returns(_mockUser);
+                .Returns(TestEntities._mockUser);
 
-            _mapper.Map<UserDto>(_mockUser).Returns(_mockUserDto);
+            _mapper
+                .Map<UserDto>(TestEntities._mockUser)
+                .Returns(TestEntities._mockUserDto);
 
-            var result = await _service.LoginAsync(_loginModel);
+            var result = await _service.LoginAsync(TestEntities._mockLoginModel);
 
             Assert.NotNull(result);
-            Assert.Equivalent(result, _mockUserDto, strict: true);
+            Assert.Equivalent(result, TestEntities._mockUserDto, strict: true);
         }
 
         [Fact]
@@ -92,7 +60,7 @@ namespace CipherApp.Test.Services
                 .GetByQueryAsync(
                     Arg.Any<Expression<Func<User, bool>>>(),
                     Arg.Any<Expression<Func<User, object>>[]>())
-                .Returns(_mockUser);
+                .Returns(TestEntities._mockUser);
 
             LoginInputModel failingInputModel = new()
             {
@@ -108,7 +76,7 @@ namespace CipherApp.Test.Services
         public async Task LoginAsync_WhenUserNotFound_ThrowsNotFoundException()
         {
             await Assert.ThrowsAsync<NotFoundException>(
-                () => _service.LoginAsync(_loginModel));
+                () => _service.LoginAsync(TestEntities._mockLoginModel));
         }
 
         [Fact]
@@ -120,15 +88,20 @@ namespace CipherApp.Test.Services
 
             _repository
                 .AddEntityAsync(Arg.Any<User>())
-                .Returns(_mockUser);
+                .Returns(TestEntities._mockUser);
 
-            _mapper.Map<User>(Arg.Any<RegisterInputModel>()).Returns(_mockUser);
-            _mapper.Map<UserDto>(Arg.Any<User>()).Returns(_mockUserDto);
+            _mapper
+                .Map<User>(Arg.Any<RegisterInputModel>())
+                .Returns(TestEntities._mockUser);
+            
+            _mapper
+                .Map<UserDto>(Arg.Any<User>())
+                .Returns(TestEntities._mockUserDto);
 
-            var result = await _service.RegisterAsync(_registerModel);
+            var result = await _service.RegisterAsync(TestEntities._mockRegisterModel);
 
             Assert.NotNull(result);
-            Assert.Equivalent(result, _mockUserDto);
+            Assert.Equivalent(result, TestEntities._mockUserDto);
         }
 
         [Fact]
@@ -139,7 +112,7 @@ namespace CipherApp.Test.Services
                 .Returns(true);
 
             await Assert.ThrowsAsync<UserExistsException>(
-                () => _service.RegisterAsync(_registerModel));
+                () => _service.RegisterAsync(TestEntities._mockRegisterModel));
         }
     }
 }

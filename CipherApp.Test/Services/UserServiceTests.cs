@@ -21,23 +21,6 @@ namespace CipherApp.Test.Services
 
         private readonly ITestOutputHelper _output;
 
-        private readonly User _mockUser = new()
-        {
-            Id = 1,
-            Password = "password",
-            Username = "username",
-            Messages = new List<Message>(),
-            Chats = new List<Chat>(),
-            Email = "test@email.com"
-        };
-
-        private readonly UserDto _mockUserDto = new()
-        {
-            Id = 1,
-            Username = "username",
-            Email = "test@email.com"
-        };
-
         public UserServiceTests(ITestOutputHelper output)
         {
             _mapper = Substitute.For<IMapper>();
@@ -56,12 +39,12 @@ namespace CipherApp.Test.Services
                 .GetByQueryAsync(
                     Arg.Any<Expression<Func<User, bool>>>(), 
                     Arg.Any<Expression<Func<User, object>>[]>())
-                .Returns(_mockUser);
+                .Returns(TestEntities._mockUser);
 
             var result = await _service.GetUserAsync("test@email.com");
 
             Assert.NotNull(result);
-            Assert.Equivalent(result, _mockUser, strict: true);
+            Assert.Equivalent(result, TestEntities._mockUser, strict: true);
         }
 
         [Fact]
@@ -71,24 +54,26 @@ namespace CipherApp.Test.Services
                 .GetByQueryAsync(
                     Arg.Any<Expression<Func<User, bool>>>(),
                     Arg.Any<Expression<Func<User, object>>[]>())
-                .Returns(_mockUser);
+                .Returns(TestEntities._mockUser);
 
             var result = await _service.GetUserAsync(1);
 
             Assert.NotNull(result);
-            Assert.Equivalent(result, _mockUser, strict: true);
+            Assert.Equivalent(result, TestEntities._mockUser, strict: true);
         }
 
         [Fact]
         public async Task GetUserAsync_ByEmail_WhenNotFound_ThrowsNotFoundException()
         {
-            await Assert.ThrowsAsync<NotFoundException>(() => _service.GetUserAsync(""));
+            await Assert.ThrowsAsync<NotFoundException>(
+                () => _service.GetUserAsync(""));
         }
 
         [Fact]
         public async Task GetUserAsync_ById_WhenNotFound_ThrowsNotFoundException()
         {
-            await Assert.ThrowsAsync<NotFoundException>(() => _service.GetUserAsync(1));
+            await Assert.ThrowsAsync<NotFoundException>(
+                () => _service.GetUserAsync(1));
         }
     }
 }

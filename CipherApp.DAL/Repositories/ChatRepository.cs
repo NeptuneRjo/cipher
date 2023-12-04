@@ -36,11 +36,6 @@ namespace CipherApp.DAL.Repositories
             Chat chat = await _context.Chats.Include(chat => chat.Users).FirstAsync(chat => chat.UID == chatUID);
             User user = await _context.Users.Include(user => user.Chats).FirstAsync(user => user.Email == email);
 
-            if (user == null || chat == null) 
-            {
-                throw new Exception();
-            }
-
             chat.Users.Add(user);
             user.Chats.Add(chat);
 
@@ -52,11 +47,6 @@ namespace CipherApp.DAL.Repositories
         public async Task<Chat> CreateChatByEmail(string email)
         {
             User user = await _context.Users.Include(user => user.Chats).FirstAsync(user => user.Email == email);
-
-            if (user == null)
-            {
-                throw new Exception();
-            }
 
             Chat newChat = new()
             {
@@ -78,26 +68,15 @@ namespace CipherApp.DAL.Repositories
             return newChat;
         }
 
-        public async Task<ICollection<Chat>> GetChatsByEmail(string email)
-        {
-            ICollection<Chat> chats = await _context.Chats
-                .Include(e => e.Users)
-                .Include(e => e.Messages)
-                .Where(e => e.Users.Any(user => user.Email == email))
-                .ToListAsync();
-
-            return chats;
-        }
-
-        public async Task RemoveUserFromChat(string email, string chatUID)
+        public async Task<Chat> RemoveUserFromChat(string email, string chatUID)
         {
             Chat chat = await _context.Chats
                 .Include(chat => chat.Users)
-                .FirstAsync(e => e.UID == chatUID);
+                .FirstOrDefaultAsync(e => e.UID == chatUID);
             
             User user = await _context.Users
                 .Include(user => user.Chats)
-                .FirstAsync(e => e.Email == email);
+                .FirstOrDefaultAsync(user => user.Email == email);
 
             if (user != null && chat != null)
             {
@@ -106,6 +85,7 @@ namespace CipherApp.DAL.Repositories
 
                 await _context.SaveChangesAsync();
             }
+            return chat;
         }
     }
 }

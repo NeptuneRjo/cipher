@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Cipher.BLL
+namespace CipherApp.BLL
 {
     public static class DependencyInjection
     {
